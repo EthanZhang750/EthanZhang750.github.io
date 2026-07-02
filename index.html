@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚽ 球员实时信息系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);color:#fff;min-height:100vh}
+.header{background:rgba(0,0,0,0.3);padding:25px 20px;text-align:center;border-bottom:2px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px)}
+.header h1{font-size:2.2em;background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px}
+.status-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#00e676;margin-right:8px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.container{max-width:1300px;margin:0 auto;padding:20px}
+.controls{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:25px;align-items:center}
+.controls input,.controls select{padding:12px 20px;border-radius:30px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:14px;outline:none;transition:all 0.3s;backdrop-filter:blur(10px)}
+.controls input:focus,.controls select:focus{border-color:#f7971e;background:rgba(255,255,255,0.15)}
+.controls input{flex:1;min-width:200px}
+.controls select{min-width:130px;cursor:pointer}
+.controls select option{background:#1a1a2e;color:#fff}
+.auto-update-badge{display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:30px;background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.3);font-size:13px;color:#00e676}
+.refresh-btn{padding:12px 25px;border-radius:30px;border:none;background:linear-gradient(135deg,#f7971e,#ffd200);color:#000;cursor:pointer;font-weight:bold;font-size:14px;transition:transform 0.2s}
+.refresh-btn:hover{transform:scale(1.05)}
+.refresh-btn:active{transform:scale(0.95)}
+.stats-bar{display:flex;flex-wrap:wrap;gap:15px;margin-bottom:25px}
+.stat-card{flex:1;min-width:120px;padding:15px 20px;border-radius:15px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);text-align:center;backdrop-filter:blur(10px)}
+.stat-value{font-size:2em;font-weight:bold;background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:0.85em;color:#aaa;margin-top:5px}
+.player-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.player-card{background:rgba(255,255,255,0.05);border-radius:20px;padding:25px 20px;text-align:center;transition:all 0.3s;border:1px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px);position:relative;overflow:hidden}
+.player-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f7971e,#ffd200);opacity:0;transition:opacity 0.3s}
+.player-card:hover::before{opacity:1}
+.player-card:hover{transform:translateY(-8px);box-shadow:0 15px 40px rgba(247,151,30,0.2);border-color:rgba(247,151,30,0.3)}
+.player-photo{width:110px;height:110px;border-radius:50%;object-fit:cover;margin-bottom:15px;border:4px solid rgba(247,151,30,0.3);background:rgba(255,255,255,0.05)}
+.player-name{font-size:1.3em;font-weight:bold;margin-bottom:3px}
+.player-number{font-size:3em;font-weight:900;background:linear-gradient(135deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.player-team{color:#ccc;font-size:0.9em;margin:5px 0}
+.player-info-row{display:flex;justify-content:center;gap:15px;margin:10px 0;color:#aaa;font-size:0.9em}
+.status-badge{display:inline-block;padding:6px 20px;border-radius:20px;font-size:0.85em;font-weight:bold;margin-top:8px;text-transform:uppercase;letter-spacing:1px}
+.status-首发{background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;box-shadow:0 4px 15px rgba(0,184,148,0.3)}
+.status-替补{background:linear-gradient(135deg,#fdcb6e,#e17055);color:#333;box-shadow:0 4px 15px rgba(253,203,110,0.3)}
+.status-伤病{background:linear-gradient(135deg,#e17055,#d63031);color:#fff;box-shadow:0 4px 15px rgba(225,112,85,0.3)}
+.status-停赛{background:linear-gradient(135deg,#636e72,#2d3436);color:#fff;box-shadow:0 4px 15px rgba(99,110,114,0.3)}
+.status-转会{background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;box-shadow:0 4px 15px rgba(108,92,231,0.3)}
+.last-update{text-align:center;color:#666;font-size:0.8em;margin-top:30px;padding:10px}
+.data-highlight{color:#ffd200;font-weight:bold}
+.loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px}
+.spinner{width:50px;height:50px;border:4px solid rgba(247,151,30,0.2);border-top-color:#f7971e;border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.no-results{text-align:center;padding:60px 20px;color:#666;font-size:1.1em}
+@media(max-width:600px){.player-grid{grid-template-columns:1fr}.header h1{font-size:1.5em}}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>⚽ 球员实时信息中心</h1>
+    <p style="color:#aaa;margin-top:8px;">
+        <span class="status-dot"></span>每30秒自动同步 · 数据实时更新
+    </p>
+</div>
+
+<div class="container">
+    <!-- 搜索和筛选 -->
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="🔍 搜索球员姓名..." oninput="renderPlayers()">
+        <select id="positionFilter" onchange="renderPlayers()">
+            <option value="">📍 全部位置</option>
+        </select>
+        <select id="statusFilter" onchange="renderPlayers()">
+            <option value="">📊 全部状态</option>
+        </select>
+        <select id="teamFilter" onchange="renderPlayers()">
+            <option value="">🏟️ 全部球队</option>
+        </select>
+        <button class="refresh-btn" onclick="loadData()">🔄 立即刷新</button>
+        <div class="auto-update-badge" id="updateBadge">
+            <span class="status-dot"></span> 自动同步中
+        </div>
+    </div>
+
+    <!-- 数据统计 -->
+    <div class="stats-bar" id="statsBar"></div>
+
+    <!-- 球员列表 -->
+    <div id="playersContainer">
+        <div class="loading-screen">
+            <div class="spinner"></div>
+            <p style="color:#aaa;">正在加载球员数据...</p>
+        </div>
+    </div>
+
+    <!-- 更新时间 -->
+    <div class="last-update" id="lastUpdate"></div>
+</div>
+
+<script>
+// ==================== ⚠️ 把你的 Google Sheets CSV 链接粘贴到这里 ====================
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSWarhGpPuz7qVtcdSfC57pJfp6C-y31DSInfgk9LTwlyp9MBuMzBtaXbwYu6FT4f7MuX9oydC0J1jo/pub?gid=0&single=true&output=csv';
+// ==================== ⚠️ 修改上面这一行就行 ====================
+
+let allPlayers = [];
+let lastModifiedTime = null;
+
+// 自动更新间隔（毫秒），30秒 = 30000
+const AUTO_REFRESH_INTERVAL = 30000;
+
+async function loadData(showLoading = true) {
+    if (showLoading) {
+        document.getElementById('playersContainer').innerHTML = `
+            <div class="loading-screen">
+                <div class="spinner"></div>
+                <p style="color:#aaa;">正在同步最新数据...</p>
+            </div>`;
+    }
+    
+    try {
+        // 添加时间戳防止缓存
+        const url = SHEET_URL + (SHEET_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
+        const response = await fetch(url);
+        
+        if (!response.ok) throw new Error('网络请求失败: ' + response.status);
+        
+        const csvText = await response.text();
+        
+        if (!csvText || csvText.trim() === '') {
+            throw new Error('表格数据为空');
+        }
+        
+        // 检查数据是否有变化
+        const currentModified = csvText.length + csvText.substring(0, 100);
+        if (currentModified === lastModifiedTime) {
+            // 数据没变，不重新渲染
+            updateTimeDisplay();
+            return;
+        }
+        lastModifiedTime = currentModified;
+        
+        // 解析 CSV
+        const rows = csvText.trim().split('\n');
+        if (rows.length < 2) {
+            throw new Error('表格需要至少包含表头和一行数据');
+        }
+        
+        const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
+        
+        allPlayers = rows.slice(1).map(row => {
+            const values = parseCSVLine(row);
+            let player = {};
+            headers.forEach((header, index) => {
+                player[header] = values[index] ? values[index].trim() : '';
+            });
+            return player;
+        }).filter(p => p.name); // 过滤掉没有名字的行
+        
+        updateStats();
+        populateFilters();
+        renderPlayers();
+        updateTimeDisplay();
+        
+        console.log(`✅ 成功加载 ${allPlayers.length} 名球员数据`);
+        
+    } catch (error) {
+        console.error('❌ 加载失败:', error);
+        if (allPlayers.length === 0) {
+            document.getElementById('playersContainer').innerHTML = `
+                <div class="loading-screen">
+                    <p style="color:#e17055;font-size:1.2em;">❌ 数据加载失败</p>
+                    <p style="color:#aaa;margin-top:10px;">${error.message}</p>
+                    <button class="refresh-btn" style="margin-top:20px;" onclick="loadData()">🔄 重试</button>
+                    <p style="color:#666;margin-top:15px;font-size:0.85em;">请检查表格是否已发布为CSV格式</p>
+                </div>`;
+        }
+    }
+}
+
+// 解析 CSV 行（处理逗号）
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            result.push(current);
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    result.push(current);
+    return result;
+}
+
+// 更新统计数据
+function updateStats() {
+    const total = allPlayers.length;
+    const starters = allPlayers.filter(p => p.status === '首发').length;
+    const injured = allPlayers.filter(p => p.status === '伤病').length;
+    const teams = [...new Set(allPlayers.map(p => p.team).filter(Boolean))].length;
+    const totalGoals = allPlayers.reduce((sum, p) => sum + (parseInt(p.goals) || 0), 0);
+    
+    document.getElementById('statsBar').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-value">${total}</div>
+            <div class="stat-label">球员总数</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">${starters}</div>
+            <div class="stat-label">首发球员</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">${injured}</div>
+            <div class="stat-label">伤病球员</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">${teams}</div>
+            <div class="stat-label">覆盖球队</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">${totalGoals}</div>
+            <div class="stat-label">总进球数</div>
+        </div>
+    `;
+}
+
+// 填充筛选器选项
+function populateFilters() {
+    const positions = [...new Set(allPlayers.map(p => p.position).filter(Boolean))].sort();
+    const statuses = [...new Set(allPlayers.map(p => p.status).filter(Boolean))];
+    const teams = [...new Set(allPlayers.map(p => p.team).filter(Boolean))].sort();
+    
+    const posSelect = document.getElementById('positionFilter');
+    posSelect.innerHTML = '<option value="">📍 全部位置</option>';
+    positions.forEach(p => { posSelect.innerHTML += `<option value="${p}">${p}</option>`; });
+    
+    const statusSelect = document.getElementById('statusFilter');
+    statusSelect.innerHTML = '<option value="">📊 全部状态</option>';
+    statuses.forEach(s => { statusSelect.innerHTML += `<option value="${s}">${s}</option>`; });
+    
+    const teamSelect = document.getElementById('teamFilter');
+    teamSelect.innerHTML = '<option value="">🏟️ 全部球队</option>';
+    teams.forEach(t => { teamSelect.innerHTML += `<option value="${t}">${t}</option>`; });
+}
+
+// 渲染球员卡片
+function renderPlayers() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const posFilter = document.getElementById('positionFilter').value;
+    const statusFilter = document.getElementById('statusFilter').value;
+    const teamFilter = document.getElementById('teamFilter').value;
+    
+    let filtered = allPlayers.filter(p => {
+        const matchSearch = !searchTerm || 
+            (p.name && p.name.toLowerCase().includes(searchTerm)) ||
+            (p.team && p.team.toLowerCase().includes(searchTerm));
+        const matchPos = !posFilter || p.position === posFilter;
+        const matchStatus = !statusFilter || p.status === statusFilter;
+        const matchTeam = !teamFilter || p.team === teamFilter;
+        return matchSearch && matchPos && matchStatus && matchTeam;
+    });
+    
+    const container = document.getElementById('playersContainer');
+    
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="no-results">😔 没有找到匹配的球员<br><small style="color:#888;">试试调整筛选条件</small></div>';
+        return;
+    }
+    
+    container.innerHTML = filtered.map(p => `
+        <div class="player-card">
+            <img class="player-photo" 
+                 src="${p.photo_url || 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="110" height="110"><rect fill="%23333" width="110" height="110" rx="55"/><text fill="%23666" x="55" y="55" text-anchor="middle" dy="8" font-size="50">⚽</text></svg>')}" 
+                 alt="${p.name || '球员'}" 
+                 loading="lazy"
+                 onerror="this.src='data:image/svg+xml,' + encodeURIComponent('<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22110%22 height=%22110%22><rect fill=%22%23333%22 width=%22110%22 height=%22110%22 rx=%2255%22/><text fill=%22%23666%22 x=%2255%22 y=%2255%22 text-anchor=%22middle%22 dy=%228%22 font-size=%2250%22>⚽</text></svg>')">
+            <div class="player-name">${p.name || '未知'}</div>
+            <div class="player-number">${p.number || '-'}</div>
+            <div class="player-team">🏟️ ${p.team || '未知球队'}</div>
+            <div class="player-info-row">
+                <span>📍 ${p.position || '-'}</span>
+                <span>🌍 ${p.nation || '-'}</span>
+            </div>
+            ${(p.goals || p.assists) ? `
+            <div class="player-info-row">
+                ${p.goals ? `<span>⚽ <span class="data-highlight">${p.goals}</span> 球</span>` : ''}
+                ${p.assists ? `<span>🎯 <span class="data-highlight">${p.assists}</span> 助</span>` : ''}
+            </div>` : ''}
+            ${p.age ? `<div style="color:#aaa;font-size:0.85em;">🎂 ${p.age}岁</div>` : ''}
+            <span class="status-badge status-${p.status || 'default'}">${p.status || '未知'}</span>
+        </div>
+    `).join('');
+}
+
+// 更新时间显示
+function updateTimeDisplay() {
+    const now = new Date();
+    const timeStr = now.toLocaleString('zh-CN', { 
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit' 
+    });
+    document.getElementById('lastUpdate').innerHTML = 
+        `✅ 最后更新：${timeStr} &nbsp;|&nbsp; 每30秒自动同步 &nbsp;|&nbsp; 数据来源：Google Sheets`;
+}
+
+// 初始加载
+loadData();
+
+// 设置自动更新
+setInterval(() => {
+    loadData(false); // 静默更新，不显示加载动画
+}, AUTO_REFRESH_INTERVAL);
+
+console.log('⚽ 球员实时信息系统已启动');
+console.log('🔄 自动更新间隔：' + AUTO_REFRESH_INTERVAL/1000 + '秒');
+</script>
+</body>
+</html>
