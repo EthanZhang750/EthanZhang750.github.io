@@ -7,44 +7,34 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#0a0e1a,#1a1f35);color:#fff;min-height:100vh}
-.header{background:rgba(0,0,0,0.5);padding:20px;text-align:center;border-bottom:2px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px)}
+.header{background:rgba(0,0,0,0.5);padding:20px;text-align:center;border-bottom:2px solid rgba(255,255,255,0.1)}
 .header h1{font-size:1.6em;background:linear-gradient(90deg,#00d2ff,#3a7bd5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:12px}
-.tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.2);background:transparent;color:#fff;cursor:pointer;font-size:13px;transition:all 0.3s}
+.tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.2);background:transparent;color:#fff;cursor:pointer;font-size:13px}
 .tab:hover,.tab.active{background:linear-gradient(135deg,#00d2ff,#3a7bd5);border-color:transparent}
 .league-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:8px}
-.league-tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.15);background:transparent;color:#fff;cursor:pointer;font-size:13px;transition:all 0.3s}
+.league-tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.15);background:transparent;color:#fff;cursor:pointer;font-size:13px}
 .league-tab:hover,.league-tab.active{background:linear-gradient(135deg,#f7971e,#ffd200);border-color:transparent;color:#000}
 .container{max-width:1400px;margin:0 auto;padding:15px}
-.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px;align-items:center}
-.controls input{padding:10px 15px;border-radius:25px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:13px;outline:none;flex:1;min-width:180px}
-.controls input:focus{border-color:#00d2ff}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px}
+.controls input{padding:10px 15px;border-radius:25px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:13px;flex:1;min-width:180px}
 .btn{padding:10px 18px;border-radius:25px;border:none;background:linear-gradient(135deg,#00d2ff,#3a7bd5);color:#fff;cursor:pointer;font-weight:bold;font-size:13px}
-.api-status{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px}
-.api-badge{padding:8px 14px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px}
-.api-ok{background:rgba(0,230,118,0.2);border:1px solid rgba(0,230,118,0.4);color:#00e676}
-.api-warn{background:rgba(255,152,0,0.2);border:1px solid rgba(255,152,0,0.4);color:#ff9800}
-.api-danger{background:rgba(244,67,54,0.2);border:1px solid rgba(244,67,54,0.4);color:#f44336}
-.dot{width:8px;height:8px;border-radius:50%}
-.dot-green{background:#00e676;animation:pulse 2s infinite}
-.dot-orange{background:#ff9800;animation:pulse 1s infinite}
-.dot-red{background:#f44336}
+.api-badge{padding:8px 14px;border-radius:20px;font-size:12px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,230,118,0.2);border:1px solid rgba(0,230,118,0.4);color:#00e676;margin-bottom:15px}
+.dot{width:8px;height:8px;border-radius:50%;background:#00e676;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
-.card{background:rgba(255,255,255,0.03);border-radius:15px;padding:18px;border:1px solid rgba(255,255,255,0.1);transition:all 0.3s}
-.card:hover{transform:translateY(-3px);border-color:rgba(0,210,255,0.3)}
+.card{background:rgba(255,255,255,0.03);border-radius:15px;padding:18px;border:1px solid rgba(255,255,255,0.1)}
 .card-name{font-size:1.1em;font-weight:bold;margin-bottom:3px}
 .card-sub{color:#aaa;font-size:0.85em;margin-bottom:8px}
 .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
 .stat-item{background:rgba(255,255,255,0.05);padding:6px 10px;border-radius:8px;text-align:center}
 .stat-val{font-size:1.2em;font-weight:bold;color:#00d2ff}
 .stat-lbl{font-size:0.7em;color:#888}
-.card-info{display:flex;justify-content:space-between;align-items:center;margin-top:8px;color:#aaa;font-size:0.8em}
+.card-info{display:flex;justify-content:space-between;margin-top:8px;color:#aaa;font-size:0.8em}
 .badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.7em;background:rgba(0,210,255,0.2);color:#00d2ff}
-.standings-table{width:100%;border-collapse:collapse;font-size:0.9em}
-.standings-table th{background:rgba(0,210,255,0.15);padding:10px;text-align:left;font-size:0.8em;color:#aaa}
-.standings-table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)}
-.standings-table tr:hover{background:rgba(255,255,255,0.03)}
+table{width:100%;border-collapse:collapse;font-size:0.9em}
+th{background:rgba(0,210,255,0.15);padding:10px;text-align:left;font-size:0.8em;color:#aaa}
+td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)}
 .loading{text-align:center;padding:50px;color:#aaa}
 .spinner{width:35px;height:35px;border:3px solid rgba(0,210,255,0.2);border-top-color:#00d2ff;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 15px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -53,16 +43,10 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
 .modal.active{display:block}
 .modal-content{max-width:700px;margin:20px auto;background:#1a1f35;border-radius:20px;padding:20px;border:1px solid rgba(255,255,255,0.2)}
 .modal-close{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;float:right}
-.warning-banner{background:rgba(255,152,0,0.2);border:1px solid rgba(255,152,0,0.4);padding:12px 20px;border-radius:12px;margin-bottom:15px;display:none;text-align:center;color:#ff9800;font-size:0.9em}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.standings-table{font-size:0.7em}.header h1{font-size:1.2em}}
 </style>
 </head>
 <body>
-
-<div class="header">
-    <h1>⚽ 五大联赛数据中心</h1>
-    <p style="color:#aaa;font-size:0.85em;margin-top:5px;">射手榜 · 积分榜 · 阵容 · 赛程</p>
-</div>
+<div class="header"><h1>⚽ 五大联赛数据中心</h1><p style="color:#aaa;font-size:0.85em;margin-top:5px;">射手榜 · 积分榜 · 阵容 · 赛程</p></div>
 
 <div class="tabs" id="mainTabs">
     <button class="tab active" onclick="switchTab('scorers')">🏆 射手榜</button>
@@ -80,265 +64,86 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
 </div>
 
 <div class="container">
-    <div class="api-status">
-        <div class="api-badge api-ok" id="fdStatus"><span class="dot dot-green"></span>API 剩余: <span id="fdCount">--</span> 次/分</div>
-    </div>
-    <div class="warning-banner" id="warningBanner">⚠️ API 请求次数不足，请减少刷新频率</div>
-
+    <div class="api-badge" id="apiBadge"><span class="dot"></span>API 就绪</div>
     <div class="controls">
-        <input type="text" id="searchInput" placeholder="🔍 搜索..." oninput="renderCurrent()">
+        <input type="text" id="searchInput" placeholder="🔍 搜索..." oninput="filterCurrent()">
         <button class="btn" onclick="refreshCurrent()">🔄 刷新</button>
     </div>
     <div id="content"><div class="loading"><div class="spinner"></div>加载中...</div></div>
 </div>
 
-<div class="modal" id="modal">
-    <div class="modal-content">
-        <button class="modal-close" onclick="closeModal()">✕</button>
-        <div id="modalContent"></div>
-    </div>
-</div>
+<div class="modal" id="modal"><div class="modal-content"><button class="modal-close" onclick="document.getElementById('modal').classList.remove('active')">✕</button><div id="modalContent"></div></div></div>
 
 <script>
-const API_KEY = '970903f014f14818884ba23554d6910b';
+const KEY = '970903f014f14818884ba23554d6910b';
+const LEAGUES = {PL:{name:'英超',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},PD:{name:'西甲',flag:'🇪🇸'},BL1:{name:'德甲',flag:'🇩🇪'},SA:{name:'意甲',flag:'🇮🇹'},FL1:{name:'法甲',flag:'🇫🇷'}};
+let curLeague='PL',curTab='scorers',cache={};
 
-const LEAGUES = {
-    'PL':  { name: '英超', code: 'PL',  flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-    'PD':  { name: '西甲', code: 'PD',  flag: '🇪🇸' },
-    'BL1': { name: '德甲', code: 'BL1', flag: '🇩🇪' },
-    'SA':  { name: '意甲', code: 'SA',  flag: '🇮🇹' },
-    'FL1': { name: '法甲', code: 'FL1', flag: '🇫🇷' }
-};
-
-let currentLeague = 'PL';
-let currentTab = 'scorers';
-let apiRemaining = 10;
-let dataCache = {};
-
-function updateAPICount(res) {
-    apiRemaining = parseInt(res.headers.get('X-Requests-Available-Minute') || apiRemaining - 1);
-    if (isNaN(apiRemaining)) apiRemaining = apiRemaining - 1;
-    document.getElementById('fdCount').textContent = apiRemaining;
-    
-    const badge = document.getElementById('fdStatus');
-    if (apiRemaining <= 2) {
-        badge.className = 'api-badge api-danger';
-        badge.querySelector('.dot').className = 'dot dot-red';
-    } else if (apiRemaining <= 5) {
-        badge.className = 'api-badge api-warn';
-        badge.querySelector('.dot').className = 'dot dot-orange';
-    } else {
-        badge.className = 'api-badge api-ok';
-        badge.querySelector('.dot').className = 'dot dot-green';
-    }
-    
-    document.getElementById('warningBanner').style.display = apiRemaining <= 3 ? 'block' : 'none';
+async function api(url){
+    const r=await fetch(url,{headers:{'X-Auth-Token':KEY}});
+    if(!r.ok)throw new Error(r.status===429?'请求太频繁':r.status===403?'Key无效':'获取失败');
+    return r.json();
 }
 
-function switchTab(tab) {
-    currentTab = tab;
-    document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.remove('active'));
+function switchTab(t){
+    curTab=t;
+    document.querySelectorAll('#mainTabs .tab').forEach(x=>x.classList.remove('active'));
     event.target.classList.add('active');
-    document.getElementById('searchInput').value = '';
-    loadTabData();
+    document.getElementById('searchInput').value='';
+    load();
 }
-
-function switchLeague(code) {
-    currentLeague = code;
-    document.querySelectorAll('#leagueTabs .league-tab').forEach(t => t.classList.remove('active'));
+function switchLeague(c){
+    curLeague=c;
+    document.querySelectorAll('#leagueTabs .league-tab').forEach(x=>x.classList.remove('active'));
     event.target.classList.add('active');
-    loadTabData();
+    load();
 }
-
-function loadTabData() {
-    switch(currentTab) {
-        case 'scorers': loadScorers(); break;
-        case 'standings': loadStandings(); break;
-        case 'teams': loadTeams(); break;
-        case 'matches': loadMatches(); break;
-    }
+function load(){
+    document.getElementById('content').innerHTML='<div class="loading"><div class="spinner"></div>加载中...</div>';
+    const base='https://api.football-data.org/v4/competitions/'+curLeague;
+    if(curTab==='scorers') api(base+'/scorers?limit=50').then(d=>{cache.scorers=d.scorers||[];renderScorers();}).catch(e=>showErr(e));
+    if(curTab==='standings') api(base+'/standings').then(d=>{cache.standings=d.standings[0].table||[];renderStandings();}).catch(e=>showErr(e));
+    if(curTab==='teams') api(base+'/teams').then(d=>{cache.teams=d.teams||[];renderTeams();}).catch(e=>showErr(e));
+    if(curTab==='matches') api(base+'/matches?status=SCHEDULED').then(d=>{cache.matches=d.matches||[];renderMatches();}).catch(e=>showErr(e));
 }
-
-async function loadScorers() {
-    document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>加载射手榜...</div>';
-    try {
-        const res = await fetch(`https://api.football-data.org/v4/competitions/${currentLeague}/scorers?limit=50`, {
-            headers: { 'X-Auth-Token': API_KEY }
-        });
-        updateAPICount(res);
-        if (!res.ok) throw new Error(res.status === 429 ? '请求太频繁，请稍后再试' : '获取失败');
-        const data = await res.json();
-        dataCache.scorers = data.scorers || [];
-        renderScorers();
-    } catch(e) {
-        document.getElementById('content').innerHTML = `<div class="error">❌ ${e.message}<br><button class="btn" style="margin-top:10px;" onclick="loadScorers()">🔄 重试</button></div>`;
-    }
+function showErr(e){
+    document.getElementById('content').innerHTML='<div class="error">❌ '+e.message+'<br><button class="btn" style="margin-top:10px" onclick="load()">🔄 重试</button></div>';
 }
-
-function renderScorers() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    let list = (dataCache.scorers || []).filter(i => {
-        return !search || i.player.name.toLowerCase().includes(search) || i.team.shortName.toLowerCase().includes(search);
-    });
-    document.getElementById('content').innerHTML = list.length ? `<div class="grid">${list.map((i,idx) => `
-        <div class="card">
-            <div class="card-name">${i.player.name}</div>
-            <div class="card-sub">🏟️ ${i.team.name}</div>
-            <div class="card-stats">
-                <div class="stat-item"><div class="stat-val">${i.goals||0}</div><div class="stat-lbl">⚽ 进球</div></div>
-                <div class="stat-item"><div class="stat-val">${i.assists||0}</div><div class="stat-lbl">🎯 助攻</div></div>
-                <div class="stat-item"><div class="stat-val">${i.playedMatches||0}</div><div class="stat-lbl">📊 出场</div></div>
-                <div class="stat-item"><div class="stat-val">${i.penalties||0}</div><div class="stat-lbl">🎯 点球</div></div>
-            </div>
-            <div class="card-info"><span>📍 ${i.player.nationality||'-'}</span><span>#${idx+1}</span></div>
-        </div>`).join('')}</div>` : '<div class="loading">😔 无结果</div>';
+function renderScorers(){
+    const s=document.getElementById('searchInput').value.toLowerCase();
+    const list=(cache.scorers||[]).filter(i=>!s||i.player.name.toLowerCase().includes(s)||i.team.shortName.toLowerCase().includes(s));
+    document.getElementById('content').innerHTML=list.length?list.map((i,n)=>'<div class="card"><div class="card-name">'+i.player.name+'</div><div class="card-sub">🏟️ '+i.team.name+'</div><div class="card-stats"><div class="stat-item"><div class="stat-val">'+(i.goals||0)+'</div><div class="stat-lbl">⚽进球</div></div><div class="stat-item"><div class="stat-val">'+(i.assists||0)+'</div><div class="stat-lbl">🎯助攻</div></div></div><div class="card-info"><span>📍 '+(i.player.nationality||'-')+'</span><span>#'+(n+1)+'</span></div></div>').join(''):'<div class="loading">😔 无结果</div>';
 }
-
-async function loadStandings() {
-    document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>加载积分榜...</div>';
-    try {
-        const res = await fetch(`https://api.football-data.org/v4/competitions/${currentLeague}/standings`, {
-            headers: { 'X-Auth-Token': API_KEY }
-        });
-        updateAPICount(res);
-        if (!res.ok) throw new Error('获取失败');
-        const data = await res.json();
-        const table = data.standings?.[0]?.table || [];
-        dataCache.standings = table;
-        renderStandings(table);
-    } catch(e) {
-        document.getElementById('content').innerHTML = `<div class="error">❌ ${e.message}<br><button class="btn" style="margin-top:10px;" onclick="loadStandings()">🔄 重试</button></div>`;
-    }
+function renderStandings(){
+    const t=cache.standings||[];
+    document.getElementById('content').innerHTML='<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead><tbody>'+t.map(r=>'<tr style="'+(r.position<=4?'border-left:3px solid #00d2ff':r.position>=t.length-3?'border-left:3px solid #e17055':'')+'"><td><b>'+r.position+'</b></td><td><b>'+(r.team.crest?'<img src="'+r.team.crest+'" width="20" style="vertical-align:middle;margin-right:6px">':'')+r.team.shortName+'</b></td><td>'+r.playedGames+'</td><td>'+r.won+'</td><td>'+r.draw+'</td><td>'+r.lost+'</td><td>'+r.goalsFor+'</td><td>'+r.goalsAgainst+'</td><td style="color:'+(r.goalDifference>0?'#00e676':r.goalDifference<0?'#e17055':'#fff')+'">'+(r.goalDifference>0?'+':'')+r.goalDifference+'</td><td style="font-weight:bold;font-size:1.1em">'+r.points+'</td></tr>').join('')+'</tbody></table></div>';
 }
-
-function renderStandings(table) {
-    document.getElementById('content').innerHTML = `
-        <div style="overflow-x:auto;">
-            <table class="standings-table">
-                <thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead>
-                <tbody>${table.map(t => `
-                    <tr style="${t.position <= 4 ? 'border-left:3px solid #00d2ff;' : t.position >= table.length-3 ? 'border-left:3px solid #e17055;' : ''}">
-                        <td style="font-weight:bold;">${t.position}</td>
-                        <td style="font-weight:bold;">${t.team.crest ? `<img src="${t.team.crest}" width="20" style="vertical-align:middle;margin-right:6px;">` : ''}${t.team.shortName}</td>
-                        <td>${t.playedGames}</td><td>${t.won}</td><td>${t.draw}</td><td>${t.lost}</td>
-                        <td>${t.goalsFor}</td><td>${t.goalsAgainst}</td>
-                        <td style="color:${t.goalDifference>0?'#00e676':t.goalDifference<0?'#e17055':'#fff'}">${t.goalDifference>0?'+':''}${t.goalDifference}</td>
-                        <td style="font-weight:bold;font-size:1.1em;">${t.points}</td>
-                    </tr>
-                `).join('')}</tbody>
-            </table>
-        </div>`;
+function renderTeams(){
+    const s=document.getElementById('searchInput').value.toLowerCase();
+    const list=(cache.teams||[]).filter(t=>t.name.toLowerCase().includes(s));
+    document.getElementById('content').innerHTML=list.length?list.map(t=>'<div class="card" onclick="loadSquad('+t.id+',\''+t.name+'\')" style="cursor:pointer"><div class="card-name">'+(t.crest?'<img src="'+t.crest+'" width="24" style="vertical-align:middle;margin-right:6px">':'')+t.name+'</div><div class="card-sub">🏟️ '+(t.venue||'未知')+'</div><div class="card-info"><span>👤 '+(t.coach?.name||'未知')+'</span><span class="badge">查看阵容→</span></div></div>').join(''):'<div class="loading">😔 无结果</div>';
 }
-
-async function loadTeams() {
-    document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>加载球队列表...</div>';
-    try {
-        const res = await fetch(`https://api.football-data.org/v4/competitions/${currentLeague}/teams`, {
-            headers: { 'X-Auth-Token': API_KEY }
-        });
-        updateAPICount(res);
-        if (!res.ok) throw new Error('获取失败');
-        const data = await res.json();
-        dataCache.teams = data.teams || [];
-        renderTeams();
-    } catch(e) {
-        document.getElementById('content').innerHTML = `<div class="error">❌ ${e.message}<br><button class="btn" style="margin-top:10px;" onclick="loadTeams()">🔄 重试</button></div>`;
-    }
-}
-
-function renderTeams() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    let list = (dataCache.teams || []).filter(t => t.name.toLowerCase().includes(search));
-    document.getElementById('content').innerHTML = list.length ? `<div class="grid">${list.map(t => `
-        <div class="card" onclick="loadSquad(${t.id},'${t.name}')" style="cursor:pointer">
-            <div class="card-name">${t.crest ? `<img src="${t.crest}" width="24" style="vertical-align:middle;margin-right:6px;">` : ''}${t.name}</div>
-            <div class="card-sub">🏟️ ${t.venue || '未知主场'}</div>
-            <div class="card-info"><span>👤 教练：${t.coach?.name || '未知'}</span><span class="badge">查看阵容 →</span></div>
-        </div>`).join('')}</div>` : '<div class="loading">😔 无结果</div>';
-}
-
-async function loadSquad(teamId, teamName) {
+async function loadSquad(id,name){
     document.getElementById('modal').classList.add('active');
-    document.getElementById('modalContent').innerHTML = '<div class="loading"><div class="spinner"></div>加载阵容...</div>';
-    try {
-        const res = await fetch(`https://api.football-data.org/v4/teams/${teamId}`, {
-            headers: { 'X-Auth-Token': API_KEY }
-        });
-        updateAPICount(res);
-        if (!res.ok) throw new Error('获取失败');
-        const data = await res.json();
-        const squad = data.squad || [];
-        document.getElementById('modalContent').innerHTML = `
-            <h3 style="margin-bottom:15px;">👥 ${teamName} 阵容</h3>
-            ${data.coach?.name ? `<p style="color:#aaa;margin-bottom:10px;">🧢 教练：${data.coach.name} (${data.coach.nationality||''})</p>` : ''}
-            <div class="grid">${squad.filter(p => p.name).map(p => `
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:1.5em;font-weight:bold;color:#00d2ff;">${p.shirtNumber || '-'}</div>
-                    <div class="card-name">${p.name}</div>
-                    <div style="color:#aaa;font-size:0.8em;">${p.position || '-'}</div>
-                    <div style="color:#888;font-size:0.7em;">🌍 ${p.nationality || '-'} | 🎂 ${(p.dateOfBirth||'').substring(0,4) || '-'}</div>
-                </div>
-            `).join('')}</div>`;
-    } catch(e) {
-        document.getElementById('modalContent').innerHTML = `<div class="error">❌ ${e.message}</div>`;
-    }
+    document.getElementById('modalContent').innerHTML='<div class="loading"><div class="spinner"></div>加载阵容...</div>';
+    try{
+        const d=await api('https://api.football-data.org/v4/teams/'+id);
+        const sq=d.squad||[];
+        document.getElementById('modalContent').innerHTML='<h3 style="margin-bottom:15px">👥 '+name+'</h3>'+(d.coach?.name?'<p style="color:#aaa;margin-bottom:10px">🧢 教练：'+d.coach.name+'</p>':'')+'<div class="grid">'+sq.filter(p=>p.name).map(p=>'<div class="card" style="text-align:center"><div style="font-size:1.5em;font-weight:bold;color:#00d2ff">'+(p.shirtNumber||'-')+'</div><div class="card-name">'+p.name+'</div><div style="color:#aaa;font-size:0.8em">'+(p.position||'-')+'</div><div style="color:#888;font-size:0.7em">🌍 '+(p.nationality||'-')+'</div></div>').join('')+'</div>';
+    }catch(e){document.getElementById('modalContent').innerHTML='<div class="error">❌ '+e.message+'</div>';}
 }
-
-async function loadMatches() {
-    document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>加载赛程...</div>';
-    try {
-        const res = await fetch(`https://api.football-data.org/v4/competitions/${currentLeague}/matches?status=SCHEDULED`, {
-            headers: { 'X-Auth-Token': API_KEY }
-        });
-        updateAPICount(res);
-        if (!res.ok) throw new Error('获取失败');
-        const data = await res.json();
-        dataCache.matches = data.matches || [];
-        renderMatches();
-    } catch(e) {
-        document.getElementById('content').innerHTML = `<div class="error">❌ ${e.message}<br><button class="btn" style="margin-top:10px;" onclick="loadMatches()">🔄 重试</button></div>`;
-    }
+function renderMatches(){
+    const s=document.getElementById('searchInput').value.toLowerCase();
+    const list=(cache.matches||[]).filter(m=>!s||m.homeTeam.name.toLowerCase().includes(s)||m.awayTeam.name.toLowerCase().includes(s)).slice(0,30);
+    document.getElementById('content').innerHTML=list.length?list.map(m=>'<div class="card" style="text-align:center"><div style="color:#888;font-size:0.8em">'+new Date(m.utcDate).toLocaleDateString('zh-CN')+' | '+new Date(m.utcDate).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})+'</div><div style="display:flex;justify-content:center;align-items:center;gap:10px;margin:10px 0"><span style="flex:1;text-align:right">'+m.homeTeam.shortName+'</span><span style="color:#888">VS</span><span style="flex:1;text-align:left">'+m.awayTeam.shortName+'</span></div><div style="color:#aaa;font-size:0.8em">🏟️ '+(m.venue||'待定')+' | 第'+m.matchday+'轮</div></div>').join(''):'<div class="loading">暂无未来赛程</div>';
 }
-
-function renderMatches() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    let list = (dataCache.matches || []).filter(m => {
-        return !search || m.homeTeam.name.toLowerCase().includes(search) || m.awayTeam.name.toLowerCase().includes(search);
-    }).slice(0, 30);
-    
-    document.getElementById('content').innerHTML = list.length ? `<div class="grid">${list.map(m => `
-        <div class="card" style="text-align:center;">
-            <div style="color:#888;font-size:0.8em;">${new Date(m.utcDate).toLocaleDateString('zh-CN')} | ${new Date(m.utcDate).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'})}</div>
-            <div style="display:flex;justify-content:center;align-items:center;gap:10px;margin:10px 0;">
-                <span style="flex:1;text-align:right;">${m.homeTeam.shortName}</span>
-                <span style="color:#888;">VS</span>
-                <span style="flex:1;text-align:left;">${m.awayTeam.shortName}</span>
-            </div>
-            <div style="color:#aaa;font-size:0.8em;">🏟️ ${m.venue || '待定'} | 第${m.matchday}轮</div>
-        </div>
-    `).join('')}</div>` : '<div class="loading">暂无未来赛程</div>';
+function filterCurrent(){
+    if(curTab==='scorers')renderScorers();
+    if(curTab==='teams')renderTeams();
+    if(curTab==='matches')renderMatches();
 }
-
-function closeModal() {
-    document.getElementById('modal').classList.remove('active');
-}
-
-function renderCurrent() {
-    switch(currentTab) {
-        case 'scorers': renderScorers(); break;
-        case 'standings': renderStandings(dataCache.standings || []); break;
-        case 'teams': renderTeams(); break;
-        case 'matches': renderMatches(); break;
-    }
-}
-
-function refreshCurrent() {
-    document.getElementById('searchInput').value = '';
-    loadTabData();
-}
-
-// 初始加载
-loadScorers();
+function refreshCurrent(){document.getElementById('searchInput').value='';load();}
+load();
 </script>
 </body>
 </html>https://v3.football.api-sports.io/players/squads?team=${teamId}`
