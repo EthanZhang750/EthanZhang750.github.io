@@ -3,26 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚽ 五大联赛全功能数据中心</title>
+<title>⚽ 五大联赛数据中心</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#0a0e1a,#1a1f35);color:#fff;min-height:100vh}
 .header{background:rgba(0,0,0,0.5);padding:20px;text-align:center;border-bottom:2px solid rgba(255,255,255,0.1);backdrop-filter:blur(10px)}
 .header h1{font-size:1.6em;background:linear-gradient(90deg,#00d2ff,#3a7bd5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:12px}
-.tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.2);background:transparent;color:#fff;cursor:pointer;font-size:13px;transition:all 0.3s;white-space:nowrap}
+.tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.2);background:transparent;color:#fff;cursor:pointer;font-size:13px;transition:all 0.3s}
 .tab:hover,.tab.active{background:linear-gradient(135deg,#00d2ff,#3a7bd5);border-color:transparent}
 .league-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:8px}
 .league-tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.15);background:transparent;color:#fff;cursor:pointer;font-size:13px;transition:all 0.3s}
 .league-tab:hover,.league-tab.active{background:linear-gradient(135deg,#f7971e,#ffd200);border-color:transparent;color:#000}
 .container{max-width:1400px;margin:0 auto;padding:15px}
 .controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px;align-items:center}
-.controls input,.controls select{padding:10px 15px;border-radius:25px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:13px;outline:none}
-.controls input{flex:1;min-width:180px}
-.controls input:focus,.controls select:focus{border-color:#00d2ff}
-.controls select option{background:#1a1f35;color:#fff}
+.controls input{padding:10px 15px;border-radius:25px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:13px;outline:none;flex:1;min-width:180px}
+.controls input:focus{border-color:#00d2ff}
 .btn{padding:10px 18px;border-radius:25px;border:none;background:linear-gradient(135deg,#00d2ff,#3a7bd5);color:#fff;cursor:pointer;font-weight:bold;font-size:13px}
-.btn:hover{opacity:0.9}
 .api-status{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:15px}
 .api-badge{padding:8px 14px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px}
 .api-ok{background:rgba(0,230,118,0.2);border:1px solid rgba(0,230,118,0.4);color:#00e676}
@@ -34,10 +31,8 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
 .dot-red{background:#f44336}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
-.card{background:rgba(255,255,255,0.03);border-radius:15px;padding:18px;border:1px solid rgba(255,255,255,0.1);transition:all 0.3s;position:relative;overflow:hidden}
+.card{background:rgba(255,255,255,0.03);border-radius:15px;padding:18px;border:1px solid rgba(255,255,255,0.1);transition:all 0.3s}
 .card:hover{transform:translateY(-3px);border-color:rgba(0,210,255,0.3)}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#00d2ff,#3a7bd5);opacity:0;transition:opacity 0.3s}
-.card:hover::before{opacity:1}
 .card-name{font-size:1.1em;font-weight:bold;margin-bottom:3px}
 .card-sub{color:#aaa;font-size:0.85em;margin-bottom:8px}
 .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
@@ -50,8 +45,6 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
 .standings-table th{background:rgba(0,210,255,0.15);padding:10px;text-align:left;font-size:0.8em;color:#aaa}
 .standings-table td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)}
 .standings-table tr:hover{background:rgba(255,255,255,0.03)}
-.standings-table .pos{font-weight:bold;font-size:1.1em;width:30px}
-.standings-table .team-name{font-weight:bold}
 .loading{text-align:center;padding:50px;color:#aaa}
 .spinner{width:35px;height:35px;border:3px solid rgba(0,210,255,0.2);border-top-color:#00d2ff;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 15px}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -61,18 +54,16 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
 .modal-content{max-width:700px;margin:20px auto;background:#1a1f35;border-radius:20px;padding:20px;border:1px solid rgba(255,255,255,0.2)}
 .modal-close{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;float:right}
 .warning-banner{background:rgba(255,152,0,0.2);border:1px solid rgba(255,152,0,0.4);padding:12px 20px;border-radius:12px;margin-bottom:15px;display:none;text-align:center;color:#ff9800;font-size:0.9em}
-.photo-thumb{width:50px;height:50px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,0.1)}
-@media(max-width:600px){.grid{grid-template-columns:1fr}.standings-table{font-size:0.75em}.header h1{font-size:1.2em}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.standings-table{font-size:0.7em}.header h1{font-size:1.2em}}
 </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>⚽ 五大联赛全功能数据中心</h1>
-    <p style="color:#aaa;font-size:0.85em;margin-top:5px;">射手榜 · 积分榜 · 阵容 · 赛程 · 双API驱动</p>
+    <h1>⚽ 五大联赛数据中心</h1>
+    <p style="color:#aaa;font-size:0.85em;margin-top:5px;">射手榜 · 积分榜 · 阵容 · 赛程</p>
 </div>
 
-<!-- 功能标签 -->
 <div class="tabs" id="mainTabs">
     <button class="tab active" onclick="switchTab('scorers')">🏆 射手榜</button>
     <button class="tab" onclick="switchTab('standings')">📊 积分榜</button>
@@ -80,7 +71,6 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
     <button class="tab" onclick="switchTab('matches')">📅 赛程</button>
 </div>
 
-<!-- 联赛标签 -->
 <div class="league-tabs" id="leagueTabs">
     <button class="league-tab active" onclick="switchLeague('PL')">🏴󠁧󠁢󠁥󠁮󠁧󠁿 英超</button>
     <button class="league-tab" onclick="switchLeague('PD')">🇪🇸 西甲</button>
@@ -90,26 +80,18 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
 </div>
 
 <div class="container">
-    <!-- API 状态 -->
     <div class="api-status">
-        <div class="api-badge api-ok" id="fdStatus"><span class="dot dot-green"></span>Football-Data: <span id="fdCount">--</span></div>
-        <div class="api-badge api-ok" id="apifStatus"><span class="dot dot-green"></span>API-Football: <span id="apifCount">--</span></div>
+        <div class="api-badge api-ok" id="fdStatus"><span class="dot dot-green"></span>API 剩余: <span id="fdCount">--</span> 次/分</div>
     </div>
+    <div class="warning-banner" id="warningBanner">⚠️ API 请求次数不足，请减少刷新频率</div>
 
-    <!-- 警告横幅 -->
-    <div class="warning-banner" id="warningBanner">⚠️ API 请求次数即将用尽，部分功能可能受限，请稍后再试</div>
-
-    <!-- 搜索 -->
     <div class="controls">
         <input type="text" id="searchInput" placeholder="🔍 搜索..." oninput="renderCurrent()">
         <button class="btn" onclick="refreshCurrent()">🔄 刷新</button>
     </div>
-
-    <!-- 内容区 -->
     <div id="content"><div class="loading"><div class="spinner"></div>加载中...</div></div>
 </div>
 
-<!-- 弹窗 -->
 <div class="modal" id="modal">
     <div class="modal-content">
         <button class="modal-close" onclick="closeModal()">✕</button>
@@ -118,60 +100,41 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
 </div>
 
 <script>
-// ========== ⚠️ 两个 API Key ==========
-const FD_KEY = '970903f014f14818884ba23554d6910b';
-const APIF_KEY = '2a56242fd44926a1918e55e6733f0319';  // ← 替换成你的 API-Football Key
-// ====================================
+const API_KEY = '970903f014f14818884ba23554d6910b';
 
 const LEAGUES = {
-    'PL':  { name: '英超', code: 'PL',  flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', apifId: 39 },
-    'PD':  { name: '西甲', code: 'PD',  flag: '🇪🇸', apifId: 140 },
-    'BL1': { name: '德甲', code: 'BL1', flag: '🇩🇪', apifId: 78 },
-    'SA':  { name: '意甲', code: 'SA',  flag: '🇮🇹', apifId: 135 },
-    'FL1': { name: '法甲', code: 'FL1', flag: '🇫🇷', apifId: 61 }
+    'PL':  { name: '英超', code: 'PL',  flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+    'PD':  { name: '西甲', code: 'PD',  flag: '🇪🇸' },
+    'BL1': { name: '德甲', code: 'BL1', flag: '🇩🇪' },
+    'SA':  { name: '意甲', code: 'SA',  flag: '🇮🇹' },
+    'FL1': { name: '法甲', code: 'FL1', flag: '🇫🇷' }
 };
 
 let currentLeague = 'PL';
 let currentTab = 'scorers';
-let fdRemaining = 10;
-let apifRemaining = 100;
+let apiRemaining = 10;
 let dataCache = {};
 
-// API 请求计数器
-function updateFDCount(res) {
-    fdRemaining = parseInt(res.headers.get('X-Requests-Available-Minute') || fdRemaining - 1);
-    document.getElementById('fdCount').textContent = `剩余 ${fdRemaining}/分`;
-    updateBadges();
-}
-
-function updateAPIFCount(res) {
-    apifRemaining = parseInt(res.headers.get('x-ratelimit-requests-remaining') || apifRemaining - 1);
-    document.getElementById('apifCount').textContent = `剩余 ${apifRemaining}/天`;
-    updateBadges();
-}
-
-function updateBadges() {
-    // FD
-    const fdBadge = document.getElementById('fdStatus');
-    fdBadge.className = 'api-badge ' + (fdRemaining <= 2 ? 'api-danger' : fdRemaining <= 5 ? 'api-warn' : 'api-ok');
-    fdBadge.querySelector('.dot').className = 'dot ' + (fdRemaining <= 2 ? 'dot-red' : fdRemaining <= 5 ? 'dot-orange' : 'dot-green');
+function updateAPICount(res) {
+    apiRemaining = parseInt(res.headers.get('X-Requests-Available-Minute') || apiRemaining - 1);
+    if (isNaN(apiRemaining)) apiRemaining = apiRemaining - 1;
+    document.getElementById('fdCount').textContent = apiRemaining;
     
-    // APIF
-    const apifBadge = document.getElementById('apifStatus');
-    apifBadge.className = 'api-badge ' + (apifRemaining <= 20 ? 'api-danger' : apifRemaining <= 50 ? 'api-warn' : 'api-ok');
-    apifBadge.querySelector('.dot').className = 'dot ' + (apifRemaining <= 20 ? 'dot-red' : apifRemaining <= 50 ? 'dot-orange' : 'dot-green');
-    
-    // 警告
-    const warning = document.getElementById('warningBanner');
-    if (fdRemaining <= 3 || apifRemaining <= 30) {
-        warning.style.display = 'block';
-        warning.textContent = `⚠️ API 次数不足：FD剩余${fdRemaining}次/分，APIF剩余${apifRemaining}次/天。请减少刷新频率。`;
+    const badge = document.getElementById('fdStatus');
+    if (apiRemaining <= 2) {
+        badge.className = 'api-badge api-danger';
+        badge.querySelector('.dot').className = 'dot dot-red';
+    } else if (apiRemaining <= 5) {
+        badge.className = 'api-badge api-warn';
+        badge.querySelector('.dot').className = 'dot dot-orange';
     } else {
-        warning.style.display = 'none';
+        badge.className = 'api-badge api-ok';
+        badge.querySelector('.dot').className = 'dot dot-green';
     }
+    
+    document.getElementById('warningBanner').style.display = apiRemaining <= 3 ? 'block' : 'none';
 }
 
-// 切换标签
 function switchTab(tab) {
     currentTab = tab;
     document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.remove('active'));
@@ -196,15 +159,14 @@ function loadTabData() {
     }
 }
 
-// ===== 射手榜 =====
 async function loadScorers() {
     document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>加载射手榜...</div>';
     try {
         const res = await fetch(`https://api.football-data.org/v4/competitions/${currentLeague}/scorers?limit=50`, {
-            headers: { 'X-Auth-Token': FD_KEY }
+            headers: { 'X-Auth-Token': API_KEY }
         });
-        updateFDCount(res);
-        if (!res.ok) throw new Error(res.status === 429 ? '请求太频繁' : '获取失败');
+        updateAPICount(res);
+        if (!res.ok) throw new Error(res.status === 429 ? '请求太频繁，请稍后再试' : '获取失败');
         const data = await res.json();
         dataCache.scorers = data.scorers || [];
         renderScorers();
@@ -216,12 +178,10 @@ async function loadScorers() {
 function renderScorers() {
     const search = document.getElementById('searchInput').value.toLowerCase();
     let list = (dataCache.scorers || []).filter(i => {
-        const n = i.player.name.toLowerCase();
-        const t = i.team.shortName.toLowerCase();
-        return !search || n.includes(search) || t.includes(search);
+        return !search || i.player.name.toLowerCase().includes(search) || i.team.shortName.toLowerCase().includes(search);
     });
     document.getElementById('content').innerHTML = list.length ? `<div class="grid">${list.map((i,idx) => `
-        <div class="card" onclick="showPlayerDetail(${i.player.id},'${i.player.name}')" style="cursor:pointer">
+        <div class="card">
             <div class="card-name">${i.player.name}</div>
             <div class="card-sub">🏟️ ${i.team.name}</div>
             <div class="card-stats">
@@ -234,14 +194,13 @@ function renderScorers() {
         </div>`).join('')}</div>` : '<div class="loading">😔 无结果</div>';
 }
 
-// ===== 积分榜 =====
 async function loadStandings() {
     document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>加载积分榜...</div>';
     try {
         const res = await fetch(`https://api.football-data.org/v4/competitions/${currentLeague}/standings`, {
-            headers: { 'X-Auth-Token': FD_KEY }
+            headers: { 'X-Auth-Token': API_KEY }
         });
-        updateFDCount(res);
+        updateAPICount(res);
         if (!res.ok) throw new Error('获取失败');
         const data = await res.json();
         const table = data.standings?.[0]?.table || [];
@@ -259,15 +218,11 @@ function renderStandings(table) {
                 <thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead>
                 <tbody>${table.map(t => `
                     <tr style="${t.position <= 4 ? 'border-left:3px solid #00d2ff;' : t.position >= table.length-3 ? 'border-left:3px solid #e17055;' : ''}">
-                        <td class="pos">${t.position}</td>
-                        <td class="team-name">${t.team.crest ? `<img src="${t.team.crest}" width="20" style="vertical-align:middle;margin-right:8px;">` : ''}${t.team.shortName}</td>
-                        <td>${t.playedGames}</td>
-                        <td>${t.won}</td>
-                        <td>${t.draw}</td>
-                        <td>${t.lost}</td>
-                        <td>${t.goalsFor}</td>
-                        <td>${t.goalsAgainst}</td>
-                        <td style="color:${t.goalDifference > 0 ? '#00e676' : t.goalDifference < 0 ? '#e17055' : '#fff'}">${t.goalDifference > 0 ? '+' : ''}${t.goalDifference}</td>
+                        <td style="font-weight:bold;">${t.position}</td>
+                        <td style="font-weight:bold;">${t.team.crest ? `<img src="${t.team.crest}" width="20" style="vertical-align:middle;margin-right:6px;">` : ''}${t.team.shortName}</td>
+                        <td>${t.playedGames}</td><td>${t.won}</td><td>${t.draw}</td><td>${t.lost}</td>
+                        <td>${t.goalsFor}</td><td>${t.goalsAgainst}</td>
+                        <td style="color:${t.goalDifference>0?'#00e676':t.goalDifference<0?'#e17055':'#fff'}">${t.goalDifference>0?'+':''}${t.goalDifference}</td>
                         <td style="font-weight:bold;font-size:1.1em;">${t.points}</td>
                     </tr>
                 `).join('')}</tbody>
@@ -275,14 +230,13 @@ function renderStandings(table) {
         </div>`;
 }
 
-// ===== 球队阵容 =====
 async function loadTeams() {
     document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>加载球队列表...</div>';
     try {
         const res = await fetch(`https://api.football-data.org/v4/competitions/${currentLeague}/teams`, {
-            headers: { 'X-Auth-Token': FD_KEY }
+            headers: { 'X-Auth-Token': API_KEY }
         });
-        updateFDCount(res);
+        updateAPICount(res);
         if (!res.ok) throw new Error('获取失败');
         const data = await res.json();
         dataCache.teams = data.teams || [];
@@ -296,65 +250,47 @@ function renderTeams() {
     const search = document.getElementById('searchInput').value.toLowerCase();
     let list = (dataCache.teams || []).filter(t => t.name.toLowerCase().includes(search));
     document.getElementById('content').innerHTML = list.length ? `<div class="grid">${list.map(t => `
-        <div class="card" onclick="loadSquadDetail(${t.id},'${t.name}')" style="cursor:pointer">
-            <div class="card-name">${t.crest ? `<img src="${t.crest}" width="24" style="vertical-align:middle;margin-right:8px;">` : ''}${t.name}</div>
+        <div class="card" onclick="loadSquad(${t.id},'${t.name}')" style="cursor:pointer">
+            <div class="card-name">${t.crest ? `<img src="${t.crest}" width="24" style="vertical-align:middle;margin-right:6px;">` : ''}${t.name}</div>
             <div class="card-sub">🏟️ ${t.venue || '未知主场'}</div>
             <div class="card-info"><span>👤 教练：${t.coach?.name || '未知'}</span><span class="badge">查看阵容 →</span></div>
         </div>`).join('')}</div>` : '<div class="loading">😔 无结果</div>';
 }
 
-async function loadSquadDetail(teamId, teamName) {
+async function loadSquad(teamId, teamName) {
     document.getElementById('modal').classList.add('active');
     document.getElementById('modalContent').innerHTML = '<div class="loading"><div class="spinner"></div>加载阵容...</div>';
-    
     try {
-        // 用 API-Football 获取阵容（含照片）
-        const leagueInfo = LEAGUES[currentLeague];
-        const res = await fetch(`https://v3.football.api-sports.io/players/squads?team=${teamId}`, {
-            headers: { 'x-apisports-key': APIF_KEY }
+        const res = await fetch(`https://api.football-data.org/v4/teams/${teamId}`, {
+            headers: { 'X-Auth-Token': API_KEY }
         });
-        updateAPIFCount(res);
-        
-        if (res.ok) {
-            const data = await res.json();
-            const squad = data.response?.[0]?.players || [];
-            renderSquadModal(teamName, squad, true);
-        } else {
-            // 备用 Football-Data
-            const fdRes = await fetch(`https://api.football-data.org/v4/teams/${teamId}`, {
-                headers: { 'X-Auth-Token': FD_KEY }
-            });
-            updateFDCount(fdRes);
-            const fdData = await fdRes.json();
-            renderSquadModal(teamName, fdData.squad || [], false);
-        }
+        updateAPICount(res);
+        if (!res.ok) throw new Error('获取失败');
+        const data = await res.json();
+        const squad = data.squad || [];
+        document.getElementById('modalContent').innerHTML = `
+            <h3 style="margin-bottom:15px;">👥 ${teamName} 阵容</h3>
+            ${data.coach?.name ? `<p style="color:#aaa;margin-bottom:10px;">🧢 教练：${data.coach.name} (${data.coach.nationality||''})</p>` : ''}
+            <div class="grid">${squad.filter(p => p.name).map(p => `
+                <div class="card" style="text-align:center;">
+                    <div style="font-size:1.5em;font-weight:bold;color:#00d2ff;">${p.shirtNumber || '-'}</div>
+                    <div class="card-name">${p.name}</div>
+                    <div style="color:#aaa;font-size:0.8em;">${p.position || '-'}</div>
+                    <div style="color:#888;font-size:0.7em;">🌍 ${p.nationality || '-'} | 🎂 ${(p.dateOfBirth||'').substring(0,4) || '-'}</div>
+                </div>
+            `).join('')}</div>`;
     } catch(e) {
         document.getElementById('modalContent').innerHTML = `<div class="error">❌ ${e.message}</div>`;
     }
 }
 
-function renderSquadModal(teamName, squad, hasPhotos) {
-    document.getElementById('modalContent').innerHTML = `
-        <h3 style="margin-bottom:15px;">👥 ${teamName} 阵容</h3>
-        <div class="grid">${squad.filter(p => p.position !== 'Coach' && p.name).map(p => `
-            <div class="card" style="text-align:center;">
-                ${hasPhotos && p.photo ? `<img src="${p.photo}" class="photo-thumb" style="margin-bottom:8px;" onerror="this.style.display='none'">` : ''}
-                <div style="font-size:1.5em;font-weight:bold;color:#00d2ff;">${p.shirtNumber || p.number || '-'}</div>
-                <div class="card-name">${p.name}</div>
-                <div style="color:#aaa;font-size:0.8em;">${p.position || '-'}</div>
-                <div style="color:#888;font-size:0.7em;">🌍 ${p.nationality || '-'} | 🎂 ${(p.dateOfBirth||'').substring(0,4) || '-'}</div>
-            </div>
-        `).join('')}</div>`;
-}
-
-// ===== 赛程 =====
 async function loadMatches() {
     document.getElementById('content').innerHTML = '<div class="loading"><div class="spinner"></div>加载赛程...</div>';
     try {
         const res = await fetch(`https://api.football-data.org/v4/competitions/${currentLeague}/matches?status=SCHEDULED`, {
-            headers: { 'X-Auth-Token': FD_KEY }
+            headers: { 'X-Auth-Token': API_KEY }
         });
-        updateFDCount(res);
+        updateAPICount(res);
         if (!res.ok) throw new Error('获取失败');
         const data = await res.json();
         dataCache.matches = data.matches || [];
@@ -367,9 +303,7 @@ async function loadMatches() {
 function renderMatches() {
     const search = document.getElementById('searchInput').value.toLowerCase();
     let list = (dataCache.matches || []).filter(m => {
-        const h = m.homeTeam.name.toLowerCase();
-        const a = m.awayTeam.name.toLowerCase();
-        return !search || h.includes(search) || a.includes(search);
+        return !search || m.homeTeam.name.toLowerCase().includes(search) || m.awayTeam.name.toLowerCase().includes(search);
     }).slice(0, 30);
     
     document.getElementById('content').innerHTML = list.length ? `<div class="grid">${list.map(m => `
@@ -383,45 +317,6 @@ function renderMatches() {
             <div style="color:#aaa;font-size:0.8em;">🏟️ ${m.venue || '待定'} | 第${m.matchday}轮</div>
         </div>
     `).join('')}</div>` : '<div class="loading">暂无未来赛程</div>';
-}
-
-// ===== 球员详情（API-Football） =====
-async function showPlayerDetail(playerId, playerName) {
-    document.getElementById('modal').classList.add('active');
-    document.getElementById('modalContent').innerHTML = '<div class="loading"><div class="spinner"></div>加载球员详情...</div>';
-    
-    try {
-        const res = await fetch(`https://v3.football.api-sports.io/players?id=${playerId}&season=2024`, {
-            headers: { 'x-apisports-key': APIF_KEY }
-        });
-        updateAPIFCount(res);
-        
-        if (!res.ok) throw new Error('获取失败');
-        const data = await res.json();
-        const p = data.response?.[0]?.player;
-        const stats = data.response?.[0]?.statistics?.[0];
-        
-        if (!p) throw new Error('无数据');
-        
-        document.getElementById('modalContent').innerHTML = `
-            <div style="text-align:center;margin-bottom:20px;">
-                ${p.photo ? `<img src="${p.photo}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:10px;">` : ''}
-                <h3>${p.name}</h3>
-                <p style="color:#aaa;">${p.nationality || ''} | ${p.age ? p.age+'岁' : ''} | ${p.height || ''} | ${p.weight || ''}</p>
-            </div>
-            ${stats ? `
-            <div class="card-stats" style="grid-template-columns:1fr 1fr 1fr;">
-                <div class="stat-item"><div class="stat-val">${stats.games?.appearences||0}</div><div class="stat-lbl">出场</div></div>
-                <div class="stat-item"><div class="stat-val">${stats.goals?.total||0}</div><div class="stat-lbl">进球</div></div>
-                <div class="stat-item"><div class="stat-val">${stats.goals?.assists||0}</div><div class="stat-lbl">助攻</div></div>
-                <div class="stat-item"><div class="stat-val">${stats.cards?.yellow||0}</div><div class="stat-lbl">🟨</div></div>
-                <div class="stat-item"><div class="stat-val">${stats.cards?.red||0}</div><div class="stat-lbl">🟥</div></div>
-                <div class="stat-item"><div class="stat-val">${stats.passes?.total||0}</div><div class="stat-lbl">传球</div></div>
-            </div>` : '<p style="color:#888;">暂无详细统计</p>'}
-        `;
-    } catch(e) {
-        document.getElementById('modalContent').innerHTML = `<div class="error">❌ ${e.message}<br><small>API-Football 可能次数不足</small></div>`;
-    }
 }
 
 function closeModal() {
@@ -446,4 +341,4 @@ function refreshCurrent() {
 loadScorers();
 </script>
 </body>
-</html>
+</html>https://v3.football.api-sports.io/players/squads?team=${teamId}`
