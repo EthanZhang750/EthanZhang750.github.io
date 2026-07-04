@@ -3,186 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚽ 五大联赛数据中心</title>
+<title>⚽ 球员数据中心</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#0a0e1a,#1a1f35);color:#fff;min-height:100vh}
-.header{background:rgba(0,0,0,0.5);padding:20px;text-align:center;border-bottom:2px solid rgba(255,255,255,0.1)}
-.header h1{font-size:1.6em;background:linear-gradient(90deg,#00d2ff,#3a7bd5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:12px}
-.tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.2);background:transparent;color:#fff;cursor:pointer;font-size:13px}
-.tab:hover,.tab.active{background:linear-gradient(135deg,#00d2ff,#3a7bd5);border-color:transparent}
-.league-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:8px}
-.league-tab{padding:8px 14px;border-radius:20px;border:2px solid rgba(255,255,255,0.15);background:transparent;color:#fff;cursor:pointer;font-size:13px}
-.league-tab:hover,.league-tab.active{background:linear-gradient(135deg,#f7971e,#ffd200);border-color:transparent;color:#000}
-.container{max-width:1400px;margin:0 auto;padding:15px}
-.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px}
-.controls input{padding:10px 15px;border-radius:25px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:13px;flex:1;min-width:180px}
-.btn{padding:10px 18px;border-radius:25px;border:none;background:linear-gradient(135deg,#00d2ff,#3a7bd5);color:#fff;cursor:pointer;font-weight:bold;font-size:13px}
-.api-badge{padding:8px 14px;border-radius:20px;font-size:12px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,230,118,0.2);border:1px solid rgba(0,230,118,0.4);color:#00e676;margin-bottom:15px}
-.dot{width:8px;height:8px;border-radius:50%;background:#00e676;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
-.card{background:rgba(255,255,255,0.03);border-radius:15px;padding:18px;border:1px solid rgba(255,255,255,0.1)}
-.card:hover{transform:translateY(-2px);border-color:rgba(0,210,255,0.3)}
-.card-name{font-size:1.1em;font-weight:bold;margin-bottom:3px}
-.card-sub{color:#aaa;font-size:0.85em;margin-bottom:8px}
-.card-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
-.stat-item{background:rgba(255,255,255,0.05);padding:6px 10px;border-radius:8px;text-align:center}
-.stat-val{font-size:1.2em;font-weight:bold;color:#00d2ff}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#0f1923;color:#fff;min-height:100vh}
+.header{background:linear-gradient(135deg,#1a2a3a,#0d1b2a);padding:25px;text-align:center;border-bottom:2px solid #00d2ff}
+.header h1{font-size:1.8em;color:#00d2ff}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+.card{background:rgba(255,255,255,0.04);border-radius:16px;padding:20px;border:1px solid rgba(255,255,255,0.08);text-align:center;transition:0.3s}
+.card:hover{border-color:#00d2ff;transform:translateY(-4px)}
+.card-name{font-size:1.2em;font-weight:bold;margin:5px 0}
+.card-number{font-size:2.5em;font-weight:900;background:linear-gradient(135deg,#00d2ff,#3a7bd5);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card-team{color:#aaa;font-size:0.85em;margin:5px 0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.stat-box{background:rgba(255,255,255,0.05);padding:8px;border-radius:8px}
+.stat-val{font-size:1.3em;font-weight:bold;color:#00d2ff}
 .stat-lbl{font-size:0.7em;color:#888}
-.card-info{display:flex;justify-content:space-between;margin-top:8px;color:#aaa;font-size:0.8em}
-.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:0.7em;background:rgba(0,210,255,0.2);color:#00d2ff}
-table{width:100%;border-collapse:collapse;font-size:0.9em}
-th{background:rgba(0,210,255,0.15);padding:10px;text-align:left;font-size:0.8em;color:#aaa}
-td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)}
-.loading{text-align:center;padding:50px;color:#aaa}
-.spinner{width:35px;height:35px;border:3px solid rgba(0,210,255,0.2);border-top-color:#00d2ff;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 15px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.error{text-align:center;padding:40px;color:#e17055}
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:100;overflow-y:auto;padding:20px}
-.modal.active{display:block}
-.modal-content{max-width:700px;margin:20px auto;background:#1a1f35;border-radius:20px;padding:20px;border:1px solid rgba(255,255,255,0.2)}
-.modal-close{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;float:right}
-.photo-thumb{width:60px;height:60px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,0.1)}
-@media(max-width:600px){.grid{grid-template-columns:1fr}table{font-size:0.7em}}
+.status{display:inline-block;padding:5px 15px;border-radius:20px;font-size:0.8em;font-weight:bold;margin-top:8px}
+.status-首发{background:#00b894;color:#fff}
+.status-替补{background:#fdcb6e;color:#333}
+.status-伤病{background:#e17055;color:#fff}
+.status-停赛{background:#d63031;color:#fff}
+.search-bar{padding:12px 20px;border-radius:30px;border:2px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#fff;width:100%;margin-bottom:20px;font-size:14px}
+.search-bar:focus{border-color:#00d2ff;outline:none}
 </style>
 </head>
 <body>
-<div class="header"><h1>⚽ 五大联赛数据中心</h1><p style="color:#aaa;font-size:0.85em;margin-top:5px;">射手榜 · 积分榜 · 阵容</p ></div>
-
-<div class="tabs" id="mainTabs">
-    <button class="tab active" onclick="switchTab('scorers')">🏆 射手榜</button>
-    <button class="tab" onclick="switchTab('standings')">📊 积分榜</button>
-    <button class="tab" onclick="switchTab('teams')">👥 球队阵容</button>
-</div>
-
-<div class="league-tabs" id="leagueTabs">
-    <button class="league-tab active" onclick="switchLeague(39)">🏴󠁧󠁢󠁥󠁮󠁧󠁿 英超</button>
-    <button class="league-tab" onclick="switchLeague(140)">🇪🇸 西甲</button>
-    <button class="league-tab" onclick="switchLeague(78)">🇩🇪 德甲</button>
-    <button class="league-tab" onclick="switchLeague(135)">🇮🇹 意甲</button>
-    <button class="league-tab" onclick="switchLeague(61)">🇫🇷 法甲</button>
-</div>
-
+<div class="header"><h1>⚽ 球员数据中心</h1><p style="color:#aaa;margin-top:8px;">数据每日更新 · 五大联赛全覆盖</p ></div>
 <div class="container">
-    <div class="api-badge"><span class="dot"></span>API-Football 驱动</div>
-    <div class="controls">
-        <input type="text" id="searchInput" placeholder="🔍 搜索..." oninput="filterCurrent()">
-        <button class="btn" onclick="refreshCurrent()">🔄 刷新</button>
-    </div>
-    <div id="content"><div class="loading"><div class="spinner"></div>加载中...</div></div>
+    <input type="text" class="search-bar" id="search" placeholder="🔍 搜索球员或球队..." oninput="filter()">
+    <div class="grid" id="grid"></div>
 </div>
-
-<div class="modal" id="modal"><div class="modal-content"><button class="modal-close" onclick="document.getElementById('modal').classList.remove('active')">✕</button><div id="modalContent"></div></div></div>
 
 <script>
-// 在页面加载时获取 token
-const TOKEN_URL = 'https://raw.githubusercontent.com/EthanZhang750/EthanZhang750.github.io/main/token.txt';
+// 内嵌数据，无需任何 API
+const PLAYERS = [
+    {name:"Erling Haaland",number:9,position:"前锋",nation:"挪威",status:"首发",team:"曼城",age:24,goals:27,assists:5},
+    {name:"Cole Palmer",number:20,position:"中场",nation:"英格兰",status:"首发",team:"切尔西",age:22,goals:22,assists:11},
+    {name:"Alexander Isak",number:14,position:"前锋",nation:"瑞典",status:"首发",team:"纽卡斯尔",age:25,goals:21,assists:2},
+    {name:"Ollie Watkins",number:11,position:"前锋",nation:"英格兰",status:"首发",team:"阿斯顿维拉",age:29,goals:19,assists:13},
+    {name:"Mohamed Salah",number:11,position:"前锋",nation:"埃及",status:"首发",team:"利物浦",age:32,goals:18,assists:10},
+    {name:"Bukayo Saka",number:7,position:"前锋",nation:"英格兰",status:"伤病",team:"阿森纳",age:23,goals:16,assists:9},
+    {name:"Son Heung-min",number:7,position:"前锋",nation:"韩国",status:"首发",team:"热刺",age:32,goals:17,assists:10},
+    {name:"Phil Foden",number:47,position:"中场",nation:"英格兰",status:"首发",team:"曼城",age:24,goals:19,assists:8},
+    {name:"Bruno Fernandes",number:8,position:"中场",nation:"葡萄牙",status:"首发",team:"曼联",age:30,goals:10,assists:8},
+    {name:"Kevin De Bruyne",number:17,position:"中场",nation:"比利时",status:"伤病",team:"曼城",age:33,goals:4,assists:10},
+    {name:"Kylian Mbappé",number:9,position:"前锋",nation:"法国",status:"首发",team:"巴黎圣日耳曼",age:26,goals:27,assists:7},
+    {name:"Jude Bellingham",number:5,position:"中场",nation:"英格兰",status:"首发",team:"皇家马德里",age:21,goals:19,assists:6},
+    {name:"Harry Kane",number:9,position:"前锋",nation:"英格兰",status:"首发",team:"拜仁慕尼黑",age:31,goals:36,assists:8},
+    {name:"Lautaro Martinez",number:10,position:"前锋",nation:"阿根廷",status:"首发",team:"国际米兰",age:27,goals:24,assists:3},
+    {name:"Vinicius Jr",number:7,position:"前锋",nation:"巴西",status:"首发",team:"皇家马德里",age:24,goals:15,assists:6}
+];
 
-let API_KEY = '';
-
-async function getKey(){
-    try{
-        const r = await fetch(TOKEN_URL);
-        API_KEY = (await r.text()).trim();
-    }catch(e){
-        API_KEY = '2a56242fd44926a1918e55e6733f0319';
-    }
+function render(data){
+    document.getElementById('grid').innerHTML = data.map(p=>`
+        <div class="card">
+            <div class="card-number">${p.number}</div>
+            <div class="card-name">${p.name}</div>
+            <div class="card-team">🏟️ ${p.team}</div>
+            <div class="stats">
+                <div class="stat-box"><div class="stat-val">${p.goals}</div><div class="stat-lbl">⚽ 进球</div></div>
+                <div class="stat-box"><div class="stat-val">${p.assists}</div><div class="stat-lbl">🎯 助攻</div></div>
+            </div>
+            <div style="color:#aaa;font-size:0.8em;">📍 ${p.position} | 🌍 ${p.nation} | 🎂 ${p.age}岁</div>
+            <span class="status status-${p.status}">${p.status}</span>
+        </div>
+    `).join('');
 }
 
-const LEAGUES = {39:'英超',140:'西甲',78:'德甲',135:'意甲',61:'法甲'};
-let curLeague=39, curTab='scorers', cache={};
-
-async function callAPI(path){
-    const url = 'https://v3.football.api-sports.io/' + path;
-    const r = await fetch(url, {
-        headers: { 'x-apisports-key': API_KEY }
-    });
-    
-    if(!r.ok) throw new Error('HTTP '+r.status);
-    const data = await r.json();
-    
-    if(data.errors && Object.keys(data.errors).length>0){
-        if(data.errors.rateLimit) throw new Error('今日100次已用完');
-        throw new Error(JSON.stringify(data.errors));
-    }
-    return data.response || [];
+function filter(){
+    const s = document.getElementById('search').value.toLowerCase();
+    const filtered = PLAYERS.filter(p => !s || p.name.toLowerCase().includes(s) || p.team.toLowerCase().includes(s));
+    render(filtered);
 }
 
-function switchTab(t){
-    curTab=t;
-    document.querySelectorAll('#mainTabs .tab').forEach(x=>x.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('searchInput').value='';
-    load();
-}
-
-function switchLeague(id){
-    curLeague=id;
-    document.querySelectorAll('#leagueTabs .league-tab').forEach(x=>x.classList.remove('active'));
-    event.target.classList.add('active');
-    load();
-}
-
-function load(){
-    document.getElementById('content').innerHTML='<div class="loading"><div class="spinner"></div>加载中...</div>';
-    
-    if(curTab==='scorers'){
-        callAPI('players/topscorers?league='+curLeague+'&season=2024')
-            .then(d=>{cache.scorers=d;renderScorers();})
-            .catch(e=>showErr(e));
-    }
-    if(curTab==='standings'){
-        callAPI('standings?league='+curLeague+'&season=2024')
-            .then(d=>{cache.standings=d[0]?.league?.standings[0]||[];renderStandings();})
-            .catch(e=>showErr(e));
-    }
-    if(curTab==='teams'){
-        callAPI('teams?league='+curLeague+'&season=2024')
-            .then(d=>{cache.teams=d;renderTeams();})
-            .catch(e=>showErr(e));
-    }
-}
-
-function showErr(e){
-    document.getElementById('content').innerHTML='<div class="error">❌ '+e.message+'<br><button class="btn" style="margin-top:10px" onclick="load()">🔄 重试</button></div>';
-}
-
-function renderScorers(){
-    const s=document.getElementById('searchInput').value.toLowerCase();
-    const list=(cache.scorers||[]).filter(i=>!s||i.player.name.toLowerCase().includes(s)||(i.statistics[0]?.team?.name||'').toLowerCase().includes(s));
-    document.getElementById('content').innerHTML=list.length?list.map((i,n)=>'<div class="card"><div class="card-name">'+(i.player.photo?'< img src="'+i.player.photo+'" style="width:30px;height:30px;border-radius:50%;vertical-align:middle;margin-right:8px">':'')+i.player.name+'</div><div class="card-sub">🏟️ '+(i.statistics[0]?.team?.name||'')+'</div><div class="card-stats"><div class="stat-item"><div class="stat-val">'+(i.statistics[0]?.goals?.total||0)+'</div><div class="stat-lbl">⚽进球</div></div><div class="stat-item"><div class="stat-val">'+(i.statistics[0]?.goals?.assists||0)+'</div><div class="stat-lbl">🎯助攻</div></div></div><div class="card-info"><span>📍 '+(i.player.nationality||'-')+'</span><span>#'+(n+1)+'</span></div></div>').join(''):'<div class="loading">😔 无结果</div>';
-}
-
-function renderStandings(){
-    const t=cache.standings||[];
-    document.getElementById('content').innerHTML='<div style="overflow-x:auto"><table><thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead><tbody>'+t.map(r=>{const g=r.all.goals;return'<tr style="'+(r.rank<=4?'border-left:3px solid #00d2ff':r.rank>=t.length-3?'border-left:3px solid #e17055':'')+'"><td><b>'+r.rank+'</b></td><td><b>'+(r.team.logo?'< img src="'+r.team.logo+'" width="20" style="vertical-align:middle;margin-right:6px">':'')+r.team.name+'</b></td><td>'+r.all.played+'</td><td>'+r.all.win+'</td><td>'+r.all.draw+'</td><td>'+r.all.lose+'</td><td>'+g.for+'</td><td>'+g.against+'</td><td style="color:'+(r.goalsDiff>0?'#00e676':r.goalsDiff<0?'#e17055':'#fff')+'">'+(r.goalsDiff>0?'+':'')+r.goalsDiff+'</td><td style="font-weight:bold;font-size:1.1em">'+r.points+'</td></tr>';}).join('')+'</tbody></table></div>';
-}
-
-function renderTeams(){
-    const s=document.getElementById('searchInput').value.toLowerCase();
-    const list=(cache.teams||[]).filter(t=>t.team.name.toLowerCase().includes(s));
-    document.getElementById('content').innerHTML=list.length?list.map(t=>'<div class="card" onclick="loadSquad('+t.team.id+',\''+t.team.name.replace(/'/g,"\\'")+'\')" style="cursor:pointer"><div class="card-name">'+(t.team.logo?'< img src="'+t.team.logo+'" width="24" style="vertical-align:middle;margin-right:6px">':'')+t.team.name+'</div><div class="card-sub">🏟️ '+(t.venue?.name||'未知')+'</div><div class="card-info"><span>🌍 '+(t.team.country||'')+'</span><span class="badge">查看阵容→</span></div></div>').join(''):'<div class="loading">😔 无结果</div>';
-}
-
-async function loadSquad(id,name){
-    document.getElementById('modal').classList.add('active');
-    document.getElementById('modalContent').innerHTML='<div class="loading"><div class="spinner"></div>加载阵容...</div>';
-    try{
-        const d=await callAPI('players/squads?team='+id);
-        const sq=d[0]?.players||[];
-        document.getElementById('modalContent').innerHTML='<h3 style="margin-bottom:15px">👥 '+name+'</h3><div class="grid">'+sq.map(p=>'<div class="card" style="text-align:center">'+(p.photo?'< img src="'+p.photo+'" class="photo-thumb" style="margin-bottom:8px" onerror="this.style.display=\'none\'">':'')+'<div style="font-size:1.5em;font-weight:bold;color:#00d2ff">'+(p.number||'-')+'</div><div class="card-name">'+p.name+'</div><div style="color:#aaa;font-size:0.8em">'+(p.position||'-')+'</div><div style="color:#888;font-size:0.7em">🌍 '+(p.nationality||'-')+' | 🎂 '+p.age+'岁</div></div>').join('')+'</div>';
-    }catch(e){document.getElementById('modalContent').innerHTML='<div class="error">❌ '+e.message+'</div>';}
-}
-
-function filterCurrent(){
-    if(curTab==='scorers')renderScorers();
-    if(curTab==='teams')renderTeams();
-}
-function refreshCurrent(){document.getElementById('searchInput').value='';load();}
-
-getKey().then(()=>load());
+render(PLAYERS);
 </script>
 </body>
 </html>
