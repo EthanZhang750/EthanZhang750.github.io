@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>测试</title></head>
+<body>
+<h1>测试页面</h1>
+<div id="result">加载中...</div>
+<script>
+fetch('https://api.football-data.org/v4/competitions/ELC/teams', {
+    headers: { 'X-Auth-Token': '970903f014f14818884ba23554d6910b' }
+})
+.then(r => r.json())
+.then(d => {
+    document.getElementById('result').innerHTML = '✅ 成功！找到 ' + d.teams.length + ' 支球队<br>' + d.teams.slice(0,5).map(t => t.name).join('<br>');
+})
+.catch(e => {
+    document.getElementById('result').innerHTML = '❌ 错误：' + e.message;
+});
+</script>
+</body>
+</html>
