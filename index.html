@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚽ 五大联赛数据中心</title>
+<title>⚽ 足球数据中心</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#0a0e1a,#1a1f35);color:#fff;min-height:100vh}
@@ -24,6 +24,7 @@ body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gr
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px}
 .card{background:rgba(255,255,255,0.03);border-radius:15px;padding:18px;border:1px solid rgba(255,255,255,0.1)}
+.card:hover{transform:translateY(-2px);border-color:rgba(0,210,255,0.3)}
 .card-name{font-size:1.1em;font-weight:bold;margin-bottom:3px}
 .card-sub{color:#aaa;font-size:0.85em;margin-bottom:8px}
 .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
@@ -43,10 +44,11 @@ td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)}
 .modal.active{display:block}
 .modal-content{max-width:700px;margin:20px auto;background:#1a1f35;border-radius:20px;padding:20px;border:1px solid rgba(255,255,255,0.2)}
 .modal-close{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;float:right}
+@media(max-width:600px){.grid{grid-template-columns:1fr}table{font-size:0.7em}}
 </style>
 </head>
 <body>
-<div class="header"><h1>⚽ 五大联赛数据中心</h1><p style="color:#aaa;font-size:0.85em;margin-top:5px;">射手榜 · 积分榜 · 阵容 · 赛程</p></div>
+<div class="header"><h1>⚽ 足球数据中心</h1><p style="color:#aaa;font-size:0.85em;margin-top:5px;">射手榜 · 积分榜 · 阵容 · 赛程</p></div>
 
 <div class="tabs" id="mainTabs">
     <button class="tab active" onclick="switchTab('scorers')">🏆 射手榜</button>
@@ -56,17 +58,17 @@ td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)}
 </div>
 
 <div class="league-tabs" id="leagueTabs">
-    <button class="league-tab active" onclick="switchLeague('PL')">🏴󠁧󠁢󠁥󠁮󠁧󠁿 英超</button>
-    <button class="league-tab" onclick="switchLeague('PD')">🇪🇸 西甲</button>
-    <button class="league-tab" onclick="switchLeague('BL1')">🇩🇪 德甲</button>
-    <button class="league-tab" onclick="switchLeague('SA')">🇮🇹 意甲</button>
-    <button class="league-tab" onclick="switchLeague('FL1')">🇫🇷 法甲</button>
+    <button class="league-tab active" onclick="switchLeague('ELC')">🏴󠁧󠁢󠁥󠁮󠁧󠁿 英冠</button>
+    <button class="league-tab" onclick="switchLeague('DED')">🇳🇱 荷甲</button>
+    <button class="league-tab" onclick="switchLeague('PPL')">🇵🇹 葡超</button>
+    <button class="league-tab" onclick="switchLeague('BSA')">🇧🇷 巴甲</button>
+    <button class="league-tab" onclick="switchLeague('DSU')">🇩🇰 丹超</button>
 </div>
 
 <div class="container">
     <div class="api-badge" id="apiBadge"><span class="dot"></span>API 就绪</div>
     <div class="controls">
-        <input type="text" id="searchInput" placeholder="🔍 搜索..." oninput="filterCurrent()">
+        <input type="text" id="searchInput" placeholder="🔍 搜索球员或球队..." oninput="filterCurrent()">
         <button class="btn" onclick="refreshCurrent()">🔄 刷新</button>
     </div>
     <div id="content"><div class="loading"><div class="spinner"></div>加载中...</div></div>
@@ -76,12 +78,22 @@ td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)}
 
 <script>
 const KEY = '970903f014f14818884ba23554d6910b';
-const LEAGUES = {PL:{name:'英超',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},PD:{name:'西甲',flag:'🇪🇸'},BL1:{name:'德甲',flag:'🇩🇪'},SA:{name:'意甲',flag:'🇮🇹'},FL1:{name:'法甲',flag:'🇫🇷'}};
-let curLeague='PL',curTab='scorers',cache={};
+const LEAGUES = {
+    ELC:{name:'英冠',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
+    DED:{name:'荷甲',flag:'🇳🇱'},
+    PPL:{name:'葡超',flag:'🇵🇹'},
+    BSA:{name:'巴甲',flag:'🇧🇷'},
+    DSU:{name:'丹超',flag:'🇩🇰'}
+};
+let curLeague='ELC',curTab='scorers',cache={};
 
 async function api(url){
     const r=await fetch(url,{headers:{'X-Auth-Token':KEY}});
-    if(!r.ok)throw new Error(r.status===429?'请求太频繁':r.status===403?'Key无效':'获取失败');
+    if(!r.ok){
+        if(r.status===429)throw new Error('请求太频繁，请稍后再试');
+        if(r.status===403)throw new Error('无权访问，请检查API Key');
+        throw new Error('获取失败 (错误码:'+r.status+')');
+    }
     return r.json();
 }
 
@@ -121,7 +133,7 @@ function renderStandings(){
 function renderTeams(){
     const s=document.getElementById('searchInput').value.toLowerCase();
     const list=(cache.teams||[]).filter(t=>t.name.toLowerCase().includes(s));
-    document.getElementById('content').innerHTML=list.length?list.map(t=>'<div class="card" onclick="loadSquad('+t.id+',\''+t.name+'\')" style="cursor:pointer"><div class="card-name">'+(t.crest?'<img src="'+t.crest+'" width="24" style="vertical-align:middle;margin-right:6px">':'')+t.name+'</div><div class="card-sub">🏟️ '+(t.venue||'未知')+'</div><div class="card-info"><span>👤 '+(t.coach?.name||'未知')+'</span><span class="badge">查看阵容→</span></div></div>').join(''):'<div class="loading">😔 无结果</div>';
+    document.getElementById('content').innerHTML=list.length?list.map(t=>'<div class="card" onclick="loadSquad('+t.id+',\''+t.name.replace(/'/g,"\\'")+'\')" style="cursor:pointer"><div class="card-name">'+(t.crest?'<img src="'+t.crest+'" width="24" style="vertical-align:middle;margin-right:6px">':'')+t.name+'</div><div class="card-sub">🏟️ '+(t.venue||'未知')+'</div><div class="card-info"><span>👤 '+(t.coach?.name||'未知')+'</span><span class="badge">查看阵容→</span></div></div>').join(''):'<div class="loading">😔 无结果</div>';
 }
 async function loadSquad(id,name){
     document.getElementById('modal').classList.add('active');
@@ -129,7 +141,7 @@ async function loadSquad(id,name){
     try{
         const d=await api('https://api.football-data.org/v4/teams/'+id);
         const sq=d.squad||[];
-        document.getElementById('modalContent').innerHTML='<h3 style="margin-bottom:15px">👥 '+name+'</h3>'+(d.coach?.name?'<p style="color:#aaa;margin-bottom:10px">🧢 教练：'+d.coach.name+'</p>':'')+'<div class="grid">'+sq.filter(p=>p.name).map(p=>'<div class="card" style="text-align:center"><div style="font-size:1.5em;font-weight:bold;color:#00d2ff">'+(p.shirtNumber||'-')+'</div><div class="card-name">'+p.name+'</div><div style="color:#aaa;font-size:0.8em">'+(p.position||'-')+'</div><div style="color:#888;font-size:0.7em">🌍 '+(p.nationality||'-')+'</div></div>').join('')+'</div>';
+        document.getElementById('modalContent').innerHTML='<h3 style="margin-bottom:15px">👥 '+name+'</h3>'+(d.coach?.name?'<p style="color:#aaa;margin-bottom:10px">🧢 教练：'+d.coach.name+' ('+(d.coach.nationality||'')+')</p>':'')+'<div class="grid">'+sq.filter(p=>p.name).map(p=>'<div class="card" style="text-align:center"><div style="font-size:1.5em;font-weight:bold;color:#00d2ff">'+(p.shirtNumber||'-')+'</div><div class="card-name">'+p.name+'</div><div style="color:#aaa;font-size:0.8em">'+(p.position||'-')+'</div><div style="color:#888;font-size:0.7em">🌍 '+(p.nationality||'-')+' | 🎂 '+(p.dateOfBirth||'').substring(0,4)+'</div></div>').join('')+'</div>';
     }catch(e){document.getElementById('modalContent').innerHTML='<div class="error">❌ '+e.message+'</div>';}
 }
 function renderMatches(){
@@ -146,4 +158,4 @@ function refreshCurrent(){document.getElementById('searchInput').value='';load()
 load();
 </script>
 </body>
-</html>https://v3.football.api-sports.io/players/squads?team=${teamId}`
+</html>
