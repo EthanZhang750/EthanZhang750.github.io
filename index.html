@@ -50,7 +50,6 @@ td{padding:7px 8px;border-bottom:1px solid rgba(0,230,118,0.05)}
 .modal.active{display:block}
 .modal-header{position:sticky;top:0;background:rgba(10,26,10,0.98);padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid rgba(0,230,118,0.2);z-index:5}
 .modal-back{background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.3);color:#00e676;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:14px}
-.modal-back:hover{background:rgba(0,230,118,0.3)}
 .modal-title{font-size:1.1em;font-weight:bold;color:#00e676;flex:1}
 .modal-body{padding:20px;max-width:800px;margin:0 auto}
 @media(max-width:600px){.grid{grid-template-columns:1fr}}
@@ -98,27 +97,30 @@ td{padding:7px 8px;border-bottom:1px solid rgba(0,230,118,0.05)}
 let curMain='germany',curGerman='bl1',curEurope='UCL';
 let cache={};
 
-// 完整德甲/德乙球队 ESPN ID
-const GERMAN_TEAMS = {
-    'Bayern':133,'München':133,'Dortmund':134,'Leipzig':159,'Leverkusen':137,
-    'Mönchengladbach':135,'Gladbach':135,'Wolfsburg':144,'Frankfurt':138,
-    'Bremen':141,'Hoffenheim':151,'Stuttgart':143,'Freiburg':139,
-    'Augsburg':153,'Mainz':146,'Köln':149,'Heidenheim':156,
-    'Darmstadt':147,'Bochum':140,'Union Berlin':148,'St. Pauli':152,
-    'Kiel':155,'Hamburg':136,'Schalke':142,'Hertha':145,'Düsseldorf':150,
-    'Nürnberg':154,'Hannover':157,'Paderborn':158,'Karlsruhe':160,
-    'Fürth':161,'Kaiserslautern':162,'Magdeburg':163,'Braunschweig':164,
-    'Osnabrück':165,'Rostock':166,'Elversberg':167,'Wiesbaden':168,
-    'Regensburg':169,'Münster':170,'Ulm':171,'Aachen':172,
-    'Essen':173,'Dresden':174,'Mannheim':175,'Ingolstadt':176,
-    'Aue':177,'Lübeck':178,'Halle':179,'Verl':180,'Unterhaching':181,
-    'Bielefeld':182,'Cottbus':183,'Offenbach':184
+// 球队名称→ESPN team ID（德甲+欧冠常见队）
+const TEAM_IDS = {
+    'bayern':133,'münchen':133,'dortmund':134,'leipzig':159,'leverkusen':137,
+    'gladbach':135,'wolfsburg':144,'frankfurt':138,'bremen':141,'hoffenheim':151,
+    'stuttgart':143,'freiburg':139,'augsburg':153,'mainz':146,'köln':149,
+    'heidenheim':156,'darmstadt':147,'bochum':140,'union berlin':148,'st. pauli':152,
+    'kiel':155,'hamburg':136,'schalke':142,'hertha':145,'düsseldorf':150,
+    'real madrid':86,'barcelona':81,'atletico madrid':95,'sevilla':97,'valencia':99,
+    'man city':382,'man united':360,'liverpool':364,'arsenal':359,'chelsea':363,
+    'tottenham':367,'newcastle':361,'aston villa':365,'brighton':362,'west ham':371,
+    'psg':160,'marseille':168,'lyon':167,'monaco':165,'lille':166,
+    'juventus':111,'inter':104,'milan':99,'napoli':113,'roma':108,
+    'ajax':416,'psv':426,'feyenoord':427,'benfica':484,'porto':487,
+    'sporting':496,'celtic':491,'rangers':494,'salzburg':4263,'shakhtar':3186,
+    'dinamo zagreb':4264,'crvena zvezda':3187,'young boys':383,'galatasaray':627,
+    'fenerbahce':622,'olympiakos':464,'paok':476,'basel':429,'københavn':432
 };
 
 function findTeamId(name){
     if(!name)return null;
-    for(let k in GERMAN_TEAMS){
-        if(name.toLowerCase().includes(k.toLowerCase()))return GERMAN_TEAMS[k];
+    name=name.toLowerCase();
+    if(TEAM_IDS[name])return TEAM_IDS[name];
+    for(let k in TEAM_IDS){
+        if(name.includes(k)||k.includes(name))return TEAM_IDS[k];
     }
     return null;
 }
@@ -166,28 +168,30 @@ async function loadRoster(teamName,teamId){
     document.getElementById('modal').classList.add('active');
     document.getElementById('modalTitle').textContent=teamName+' 阵容';
     document.getElementById('modalContent').innerHTML='<div class="loading"><div class="spinner"></div>加载阵容...</div>';
+    
     try{
-        // 尝试多个联赛接口
-        let r=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/GER.1/teams/'+teamId+'/roster');
-        if(!r.ok)r=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/ENG.1/teams/'+teamId+'/roster');
-        if(!r.ok)r=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/ESP.1/teams/'+teamId+'/roster');
-        if(!r.ok)r=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/ITA.1/teams/'+teamId+'/roster');
-        if(!r.ok)r=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/FRA.1/teams/'+teamId+'/roster');
+        // 用 ESPN squad 页面 API
+        const url='https://site.api.espn.com/apis/site/v2/sports/soccer/GER.1/teams/'+teamId+'/roster';
+        const r=await fetch(url);
         if(!r.ok)throw new Error('无数据');
         const d=await r.json();
         const athletes=d.athletes||[];
-        let html='';
-        if(!athletes.length){html='<div class="loading">暂无阵容数据</div>';}
-        else{
-            html='<div class="player-grid">';
-            athletes.forEach(a=>{
-                html+=`<div class="player-card"><div class="player-num">${a.jersey||'-'}</div><div class="player-name">${a.fullName||a.displayName}</div><div class="player-pos">${a.position?.displayName||'?'} | ${a.age||'?'}岁</div></div>`;
-            });
-            html+='</div>';
-        }
+        
+        if(!athletes.length)throw new Error('无数据');
+        
+        let html='<div class="player-grid">';
+        athletes.forEach(a=>{
+            html+=`<div class="player-card">
+                <div class="player-num">${a.jersey||'-'}</div>
+                <div class="player-name">${a.fullName||a.displayName}</div>
+                <div class="player-pos">${a.position?.displayName||'?'} | ${a.age||'?'}岁</div>
+                <div class="player-pos">${a.displayHeight||''} ${a.displayWeight||''}</div>
+            </div>`;
+        });
+        html+='</div>';
         document.getElementById('modalContent').innerHTML=html;
     }catch(e){
-        document.getElementById('modalContent').innerHTML='<div class="loading">❌ 暂无该球队阵容数据<br><small>仅德甲/五大联赛球队支持</small></div>';
+        document.getElementById('modalContent').innerHTML='<div class="loading">❌ 该球队暂无阵容数据<br><small>仅五大联赛球队支持此功能</small></div>';
     }
 }
 
@@ -227,8 +231,7 @@ function buildGM(m){
         const h=r?.pointsTeam1||0,a=r?.pointsTeam2||0;
         sc=h+'-'+a;cl=h>a?'color:#00e676':h<a?'color:#ff5252':'color:#ffd740';
     }
-    const tid1=findTeamId(m.team1?.teamName||'');
-    const tid2=findTeamId(m.team2?.teamName||'');
+    const tid1=findTeamId(m.team1?.teamName||''),tid2=findTeamId(m.team2?.teamName||'');
     return `<div class="match-card"><div class="match-league">${ds} ${ts}${m.group?.groupName?' · '+m.group.groupName:''}</div><div class="match-teams">
         <div class="match-team" ${tid1?`onclick="loadRoster('${(m.team1?.teamName||'').replace(/'/g,"\\'")}',${tid1})"`:''}>${m.team1?.teamIconUrl?`<img src="${m.team1.teamIconUrl}" width="22">`:''} ${m.team1?.teamName||'?'}</div>
         <div class="match-score-box"><div class="match-score" style="${cl}">${sc}</div><div class="match-time">${live?'<span class="live">LIVE</span>':done?'结束':''}</div></div>
