@@ -3,235 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚽ 足球数据中心</title>
+<title>足球数据中心</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:#0a1a0a;color:#fff;min-height:100vh}
-.header{background:rgba(0,0,0,0.5);padding:20px;text-align:center;border-bottom:3px solid rgba(0,230,118,0.3)}
-.header h1{font-size:1.6em;background:linear-gradient(90deg,#00e676,#00b248);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:10px;position:sticky;top:0;background:rgba(10,26,10,0.97);z-index:10}
-.nav-btn{padding:8px 14px;border-radius:20px;border:2px solid rgba(0,230,118,0.3);background:transparent;color:#fff;cursor:pointer;font-size:13px}
-.nav-btn.active{background:linear-gradient(135deg,#00e676,#00b248);color:#000;border-color:transparent}
-.sub-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;padding:6px}
-.sub-btn{padding:6px 12px;border-radius:18px;border:1px solid rgba(0,230,118,0.2);background:transparent;color:#aaa;cursor:pointer;font-size:12px}
-.sub-btn.active{background:rgba(0,230,118,0.2);color:#00e676;border-color:#00e676}
-.container{max-width:1100px;margin:0 auto;padding:15px}
-.controls{display:flex;gap:10px;margin-bottom:15px}
-.controls input{padding:10px 15px;border-radius:25px;border:2px solid rgba(0,230,118,0.2);background:rgba(255,255,255,0.05);color:#fff;font-size:13px;flex:1}
-.btn{padding:10px 18px;border-radius:25px;border:none;background:linear-gradient(135deg,#00e676,#00b248);color:#000;cursor:pointer;font-weight:bold;font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
-.match-card{background:rgba(0,230,118,0.04);border-radius:14px;padding:14px;border:1px solid rgba(0,230,118,0.1)}
-.match-league{color:#00e676;font-size:0.7em;margin-bottom:5px}
-.match-teams{display:flex;align-items:center;gap:10px}
-.match-team{flex:1;display:flex;align-items:center;gap:6px;font-weight:bold;font-size:0.9em}
-.match-team.right{justify-content:flex-end}
-.match-score-box{text-align:center;min-width:55px}
-.match-score{font-size:1.5em;font-weight:bold;color:#00e676}
-.match-time{font-size:0.7em;color:#888;margin-top:2px}
-.live{color:#ff5252;animation:pulse 1.5s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-.section-title{font-size:1.1em;margin:20px 0 10px;padding-bottom:6px;border-bottom:2px solid rgba(0,230,118,0.2);color:#00e676}
-table{width:100%;border-collapse:collapse;font-size:0.85em;margin:8px 0}
-th{background:rgba(0,230,118,0.1);padding:8px;text-align:left;font-size:0.75em;color:#00e676}
-td{padding:7px 8px;border-bottom:1px solid rgba(0,230,118,0.05)}
-.team-link{cursor:pointer;color:#00e676;text-decoration:underline}
-.loading{text-align:center;padding:60px;color:#aaa}
-.spinner{width:35px;height:35px;border:3px solid rgba(0,230,118,0.2);border-top-color:#00e676;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 15px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:100;overflow-y:auto}
-.modal.active{display:block}
-.modal-header{position:sticky;top:0;background:rgba(10,26,10,0.98);padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid rgba(0,230,118,0.2)}
-.modal-back{background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.3);color:#00e676;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:14px}
-.modal-title{font-size:1.1em;font-weight:bold;color:#00e676;flex:1}
-.modal-body{padding:20px;max-width:600px;margin:0 auto}
-.roster-link{display:block;background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.2);padding:12px 18px;border-radius:12px;color:#00e676;text-decoration:none;margin:8px 0;transition:all 0.3s}
-.roster-link:hover{background:rgba(0,230,118,0.2)}
-@media(max-width:600px){.grid{grid-template-columns:1fr}}
+body{font-family:Arial,Helvetica,sans-serif;background:#0d1a0d;color:#eee;padding:10px}
+h1{text-align:center;color:#4caf50;margin:10px 0;font-size:1.4em}
+.nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:10px 0}
+.nav button{padding:7px 12px;border-radius:18px;border:1.5px solid #4caf50;background:#0d1a0d;color:#4caf50;font-size:13px;cursor:pointer}
+.nav button.on{background:#4caf50;color:#000;font-weight:bold}
+.bar{display:flex;gap:8px;margin:10px 0}
+.bar input{flex:1;padding:8px 12px;border-radius:18px;border:1.5px solid #4caf50;background:#111;color:#eee;font-size:13px}
+.bar button{padding:8px 14px;border-radius:18px;border:none;background:#4caf50;color:#000;font-weight:bold;font-size:13px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.card{background:#111;border-radius:10px;padding:12px;border:1px solid #222}
+.card .top{color:#888;font-size:11px;margin-bottom:6px}
+.card .row{display:flex;align-items:center;gap:6px}
+.card .side{flex:1;font-weight:bold;font-size:14px;display:flex;align-items:center;gap:5px}
+.card .side img{width:20px;height:20px}
+.card .side.r{justify-content:flex-end;text-align:right}
+.card .mid{font-size:1.3em;font-weight:bold;color:#4caf50;min-width:45px;text-align:center}
+.card .bot{font-size:11px;color:#666;text-align:center;margin-top:4px}
+.live{color:#ff5252;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:0.4}}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+th{background:#1a3a1a;padding:6px 8px;text-align:left;color:#4caf50;font-size:11px}
+td{padding:6px 8px;border-bottom:1px solid #1a1a1a}
+.ld{text-align:center;padding:40px;color:#888}
+summary{color:#4caf50;cursor:pointer;padding:6px 0;font-size:14px}
 </style>
 </head>
 <body>
-<div class="header">
-    <h1>⚽ 足球数据中心</h1>
-    <p style="color:#aaa;margin-top:6px;font-size:0.85em;">德甲 · 欧冠 · 实时比分 · 积分榜</p>
+<h1>⚽ 足球数据中心</h1>
+<div class="nav" id="nav">
+<button class="on" onclick="set('bl1')">德甲</button>
+<button onclick="set('bl2')">德乙</button>
+<button onclick="set('bl3')">德丙</button>
+<button onclick="set('UCL')">欧冠</button>
+<button onclick="set('UEL')">欧联</button>
 </div>
-
-<div class="nav">
-    <button class="nav-btn active" onclick="switchMain('germany')">🇩🇪 德国联赛</button>
-    <button class="nav-btn" onclick="switchMain('europe')">🇪🇺 欧洲赛事</button>
+<div class="bar">
+<input id="s" placeholder="搜索球队..." oninput="fil()">
+<button onclick="ld()">刷新</button>
 </div>
-
-<div class="sub-nav" id="germanySub">
-    <button class="sub-btn active" onclick="switchGerman('bl1')">德甲</button>
-    <button class="sub-btn" onclick="switchGerman('bl2')">德乙</button>
-    <button class="sub-btn" onclick="switchGerman('bl3')">德丙</button>
-</div>
-
-<div class="sub-nav" id="europeSub" style="display:none">
-    <button class="sub-btn active" onclick="switchEurope('UCL')">冠军联赛</button>
-    <button class="sub-btn" onclick="switchEurope('UEL')">欧联杯</button>
-</div>
-
-<div class="container">
-    <div class="controls">
-        <input type="text" id="searchInput" placeholder="🔍 搜索球队..." oninput="renderCurrent()">
-        <button class="btn" onclick="refreshCurrent()">🔄 刷新</button>
-    </div>
-    <div id="content"><div class="loading"><div class="spinner"></div>加载中...</div></div>
-</div>
-
-<div class="modal" id="modal">
-    <div class="modal-header">
-        <button class="modal-back" onclick="closeModal()">← 返回</button>
-        <span class="modal-title" id="modalTitle">查看阵容</span>
-    </div>
-    <div class="modal-body" id="modalContent"></div>
-</div>
-
+<div id="main"><div class="ld">加载中...</div></div>
 <script>
-var curMain='germany',curGerman='bl1',curEurope='UCL';
-var cache={};
-
-function showRoster(teamName){
-    document.getElementById('modal').classList.add('active');
-    document.getElementById('modalTitle').textContent=teamName+' - 查看阵容';
-    
-    var encoded=encodeURIComponent(teamName);
-    var html='<p style="color:#aaa;margin-bottom:15px;text-align:center">选择以下网站查看 '+teamName+' 的完整阵容：</p>';
-    
-    html+='<a class="roster-link" href="https://www.transfermarkt.com/schnellsuche/ergebnis/schnellsuche?query='+encoded+'" target="_blank">🌐 Transfermarkt（推荐）</a>';
-    html+='<a class="roster-link" href="https://www.google.com/search?q='+encoded+'+squad+2024+2025" target="_blank">🔍 Google 搜索阵容</a>';
-    html+='<a class="roster-link" href="https://www.bundesliga.com/en/bundesliga/clubs" target="_blank">🇩🇪 德甲官网</a>';
-    html+='<a class="roster-link" href="https://www.uefa.com/uefachampionsleague/clubs/" target="_blank">🇪🇺 UEFA官网</a>';
-    
-    document.getElementById('modalContent').innerHTML=html;
+var lg='bl1',d={};
+function set(l){
+lg=l;
+var bs=document.querySelectorAll('#nav button');
+for(var i=0;i<bs.length;i++)bs[i].className=bs[i].textContent.replace(/^\S+ /,'')===l.replace('UCL','欧冠').replace('UEL','欧联')?'on':'';
+document.getElementById('s').value='';
+ld();
 }
-
-function switchMain(m){
-    curMain=m;
-    var btns=document.querySelectorAll('.nav-btn');
-    for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');
-    event.target.classList.add('active');
-    document.getElementById('germanySub').style.display=m==='germany'?'flex':'none';
-    document.getElementById('europeSub').style.display=m==='europe'?'flex':'none';
-    document.getElementById('searchInput').value='';
-    loadData();
+async function ld(){
+document.getElementById('main').innerHTML='<div class="ld">加载中...</div>';
+try{
+if(lg==='UCL'||lg==='UEL'){
+var lk=lg==='UCL'?'UEFA.CHAMPIONS':'UEFA.EUROPA';
+var r1=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/'+lk+'/scoreboard');
+var r2=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/'+lk+'/standings');
+d.m=(await r1.json()).events||[];
+d.t=(await r2.json()).children||[];
+renE();
+}else{
+var r1=await fetch('https://api.openligadb.de/getmatchdata/'+lg);
+var r2=await fetch('https://api.openligadb.de/getbltable/'+lg+'/2024');
+d.m=await r1.json();
+d.t=await r2.json();
+renG();
 }
-
-function switchGerman(l){curGerman=l;var btns=document.querySelectorAll('#germanySub .sub-btn');for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');event.target.classList.add('active');loadData();}
-function switchEurope(l){curEurope=l;var btns=document.querySelectorAll('#europeSub .sub-btn');for(var i=0;i<btns.length;i++)btns[i].classList.remove('active');event.target.classList.add('active');loadData();}
-
-async function loadData(){
-    document.getElementById('content').innerHTML='<div class="loading"><div class="spinner"></div>加载中...</div>';
-    try{
-        if(curMain==='germany'){
-            var r1=await fetch('https://api.openligadb.de/getmatchdata/'+curGerman);
-            var r2=await fetch('https://api.openligadb.de/getbltable/'+curGerman+'/2024');
-            cache.matches=await r1.json();
-            cache.table=await r2.json();
-            renderGerman();
-        }else{
-            var league=curEurope==='UCL'?'UEFA.CHAMPIONS':'UEFA.EUROPA';
-            var r1=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/'+league+'/scoreboard');
-            var r2=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/'+league+'/standings');
-            cache.matches=(await r1.json()).events||[];
-            cache.table=(await r2.json()).children||[];
-            renderESPN();
-        }
-    }catch(e){
-        document.getElementById('content').innerHTML='<div class="loading">❌ '+e.message+'<br><button class="btn" style="margin-top:12px" onclick="loadData()">🔄 重试</button></div>';
-    }
+}catch(e){
+document.getElementById('main').innerHTML='<div class="ld">错误: '+e.message+'<br><button onclick="ld()" style="margin-top:8px;padding:6px 14px;background:#4caf50;border:none;border-radius:12px;color:#000;cursor:pointer">重试</button></div>';
 }
-
-function renderGerman(){
-    var s=document.getElementById('searchInput').value.toLowerCase();
-    var m=cache.matches||[],t=cache.table||[];
-    if(s)m=m.filter(function(x){return (x.team1&&x.team1.teamName||'').toLowerCase().indexOf(s)!==-1||(x.team2&&x.team2.teamName||'').toLowerCase().indexOf(s)!==-1;});
-    
-    var live=m.filter(function(x){return !x.matchIsFinished&&x.matchResults&&x.matchResults.length>0;});
-    var done=m.filter(function(x){return x.matchIsFinished;});
-    var up=m.filter(function(x){return !x.matchIsFinished&&(!x.matchResults||x.matchResults.length===0);});
-    
-    var h='';
-    if(t.length){
-        h+='<details open style="margin-bottom:15px"><summary style="color:#00e676;font-size:1em;cursor:pointer;padding:8px;">📊 积分榜（点击队名查看阵容链接）</summary><table><thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead><tbody>';
-        for(var i=0;i<t.length;i++){
-            var r=t[i];
-            h+='<tr><td>'+(i+1)+'</td><td class="team-link" onclick="showRoster(\''+r.teamName.replace(/'/g,"\\'")+'\')"><b>'+(r.teamIconUrl?'<img src="'+r.teamIconUrl+'" width="18" style="vertical-align:middle;margin-right:4px">':'')+r.teamName+'</b></td><td>'+r.matches+'</td><td>'+r.won+'</td><td>'+r.draw+'</td><td>'+r.lost+'</td><td>'+r.goals+'</td><td>'+r.opponentGoals+'</td><td style="color:'+(r.goalDiff>0?'#00e676':r.goalDiff<0?'#ff5252':'#fff')+'">'+(r.goalDiff>0?'+':'')+r.goalDiff+'</td><td style="font-weight:bold;color:#00e676">'+r.points+'</td></tr>';
-        }
-        h+='</tbody></table></details>';
-    }
-    if(live.length)h+='<div class="section-title">🔴 进行中</div><div class="grid">'+live.map(buildGM).join('')+'</div>';
-    if(up.length)h+='<div class="section-title">⏰ 即将开始</div><div class="grid">'+up.slice(0,9).map(buildGM).join('')+'</div>';
-    if(done.length)h+='<div class="section-title">✅ 已结束</div><div class="grid">'+done.slice(-9).map(buildGM).join('')+'</div>';
-    document.getElementById('content').innerHTML=h||'<div class="loading">暂无数据</div>';
 }
-
-function buildGM(m){
-    var d=new Date(m.matchDateTime);
-    var ds=d.toLocaleDateString('zh-CN',{month:'short',day:'numeric'});
-    var ts=d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
-    var live=!m.matchIsFinished&&m.matchResults&&m.matchResults.length>0;
-    var done=m.matchIsFinished;
-    var sc='VS',cl='';
-    if(done||live){
-        var r=m.matchResults.find(function(x){return x.resultName==='Endergebnis';})||m.matchResults[0];
-        var hs=r?r.pointsTeam1||0:0,as=r?r.pointsTeam2||0:0;
-        sc=hs+'-'+as;cl=hs>as?'color:#00e676':hs<as?'color:#ff5252':'color:#ffd740';
-    }
-    return '<div class="match-card"><div class="match-league">'+ds+' '+ts+(m.group&&m.group.groupName?' · '+m.group.groupName:'')+'</div><div class="match-teams"><div class="match-team" onclick="showRoster(\''+(m.team1?m.team1.teamName.replace(/'/g,"\\'"):'')+'\')">'+(m.team1&&m.team1.teamIconUrl?'<img src="'+m.team1.teamIconUrl+'" width="22">':'')+' '+(m.team1?m.team1.teamName:'?')+'</div><div class="match-score-box"><div class="match-score" style="'+cl+'">'+sc+'</div><div class="match-time">'+(live?'<span class="live">LIVE</span>':done?'结束':'')+'</div></div><div class="match-team right" onclick="showRoster(\''+(m.team2?m.team2.teamName.replace(/'/g,"\\'"):'')+'\')">'+(m.team2?m.team2.teamName:'?')+' '+(m.team2&&m.team2.teamIconUrl?'<img src="'+m.team2.teamIconUrl+'" width="22">':'')+'</div></div></div>';
+function renG(){
+var s=document.getElementById('s').value.toLowerCase();
+var m=d.m||[],t=d.t||[];
+if(s)m=m.filter(function(x){return (x.team1&&x.team1.teamName||'').toLowerCase().indexOf(s)!==-1||(x.team2&&x.team2.teamName||'').toLowerCase().indexOf(s)!==-1;});
+var h='';
+if(t.length){
+h+='<details open><summary>📊 积分榜</summary><table><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr>';
+for(var i=0;i<t.length;i++){
+var r=t[i];
+h+='<tr><td>'+(i+1)+'</td><td><b>'+(r.teamIconUrl?'<img src="'+r.teamIconUrl+'" width="16" style="vertical-align:middle;margin-right:4px">':'')+r.teamName+'</b></td><td>'+r.matches+'</td><td>'+r.won+'</td><td>'+r.draw+'</td><td>'+r.lost+'</td><td>'+r.goals+'</td><td>'+r.opponentGoals+'</td><td style="color:'+(r.goalDiff>0?'#4caf50':r.goalDiff<0?'#ff5252':'#eee')+'">'+(r.goalDiff>0?'+':'')+r.goalDiff+'</td><td style="font-weight:bold;color:#4caf50">'+r.points+'</td></tr>';
 }
-
-function renderESPN(){
-    var s=document.getElementById('searchInput').value.toLowerCase();
-    var m=cache.matches||[],t=cache.table||[];
-    if(s)m=m.filter(function(x){
-        var c=x.competitions?x.competitions[0]:null;
-        if(!c)return false;
-        var h=c.competitors&&c.competitors[0]?c.competitors[0].team.shortDisplayName.toLowerCase():'';
-        var a=c.competitors&&c.competitors[1]?c.competitors[1].team.shortDisplayName.toLowerCase():'';
-        return h.indexOf(s)!==-1||a.indexOf(s)!==-1;
-    });
-    
-    var h='';
-    if(t.length){
-        h+='<details open style="margin-bottom:15px"><summary style="color:#00e676;font-size:1em;cursor:pointer;padding:8px;">📊 积分榜（点击队名查看阵容链接）</summary>';
-        for(var gi=0;gi<t.length;gi++){
-            var g=t[gi];
-            h+='<strong style="color:#ffd740">'+g.name+'</strong><table><thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead><tbody>';
-            var entries=g.standings?g.standings.entries||[]:[];
-            for(var i=0;i<entries.length;i++){
-                var e=entries[i],st=e.stats||[];
-                var gd=parseInt(st[8]?st[8].value:0)||0;
-                h+='<tr><td>'+(i+1)+'</td><td class="team-link" onclick="showRoster(\''+e.team.shortDisplayName.replace(/'/g,"\\'")+'\')"><b>'+e.team.shortDisplayName+'</b></td><td>'+(st[0]?st[0].displayValue:'-')+'</td><td>'+(st[1]?st[1].displayValue:'-')+'</td><td>'+(st[2]?st[2].displayValue:'-')+'</td><td>'+(st[3]?st[3].displayValue:'-')+'</td><td>'+(st[4]?st[4].displayValue:'-')+'</td><td>'+(st[5]?st[5].displayValue:'-')+'</td><td style="color:'+(gd>0?'#00e676':gd<0?'#ff5252':'#fff')+'">'+(gd>0?'+':'')+gd+'</td><td style="font-weight:bold;color:#00e676">'+(st[6]?st[6].displayValue:'-')+'</td></tr>';
-            }
-            h+='</tbody></table>';
-        }
-        h+='</details>';
-    }
-    var live=m.filter(function(x){return x.status&&x.status.type&&x.status.type.state==='in';});
-    var done=m.filter(function(x){return x.status&&x.status.type&&x.status.type.state==='post';});
-    var up=m.filter(function(x){return x.status&&x.status.type&&x.status.type.state==='pre';});
-    if(live.length)h+='<div class="section-title">🔴 进行中</div><div class="grid">'+live.map(buildEM).join('')+'</div>';
-    if(up.length)h+='<div class="section-title">⏰ 即将开始</div><div class="grid">'+up.slice(0,9).map(buildEM).join('')+'</div>';
-    if(done.length)h+='<div class="section-title">✅ 已结束</div><div class="grid">'+done.slice(-9).map(buildEM).join('')+'</div>';
-    document.getElementById('content').innerHTML=h||'<div class="loading">暂无数据</div>';
+h+='</table></details>';
 }
-
-function buildEM(m){
-    var c=m.competitions?m.competitions[0]:null;
-    if(!c||!c.competitors||c.competitors.length<2)return'';
-    var hh=c.competitors[0],aa=c.competitors[1];
-    var live=m.status&&m.status.type&&m.status.type.state==='in';
-    var done=m.status&&m.status.type&&m.status.type.state==='post';
-    var d=new Date(m.date);
-    var ds=d.toLocaleDateString('zh-CN',{month:'short',day:'numeric'});
-    return '<div class="match-card"><div class="match-league">'+ds+'</div><div class="match-teams"><div class="match-team" onclick="showRoster(\''+hh.team.shortDisplayName.replace(/'/g,"\\'")+'\')"><img src="'+(hh.team.logo||'')+'" width="22" onerror="this.style.display=\'none\'"> '+hh.team.shortDisplayName+'</div><div class="match-score-box"><div class="match-score">'+(done||live?(hh.score?hh.score.displayValue:'0')+'-'+(aa.score?aa.score.displayValue:'0'):'VS')+'</div><div class="match-time">'+(live?'<span class="live">LIVE</span>':done?'结束':'')+'</div></div><div class="match-team right" onclick="showRoster(\''+aa.team.shortDisplayName.replace(/'/g,"\\'")+'\')">'+aa.team.shortDisplayName+' <img src="'+(aa.team.logo||'')+'" width="22" onerror="this.style.display=\'none\'"></div></div></div>';
+var live=m.filter(function(x){return !x.matchIsFinished&&x.matchResults&&x.matchResults.length>0;});
+var done=m.filter(function(x){return x.matchIsFinished;});
+var up=m.filter(function(x){return !x.matchIsFinished&&(!x.matchResults||x.matchResults.length===0);});
+if(live.length)h+='<div style="color:#ff5252;margin:12px 0 6px">🔴 进行中</div><div class="grid">'+live.map(cardG).join('')+'</div>';
+if(up.length)h+='<div style="color:#4caf50;margin:12px 0 6px">⏰ 即将开始</div><div class="grid">'+up.slice(0,9).map(cardG).join('')+'</div>';
+if(done.length)h+='<div style="color:#888;margin:12px 0 6px">✅ 已结束</div><div class="grid">'+done.slice(-9).map(cardG).join('')+'</div>';
+document.getElementById('main').innerHTML=h||'<div class="ld">暂无数据</div>';
 }
-
-function closeModal(){document.getElementById('modal').classList.remove('active');}
-function renderCurrent(){loadData();}
-function refreshCurrent(){document.getElementById('searchInput').value='';loadData();}
-loadData();
+function cardG(m){
+var dt=new Date(m.matchDateTime);
+var ds=dt.toLocaleDateString('zh-CN',{month:'short',day:'numeric'});
+var ts=dt.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+var live=!m.matchIsFinished&&m.matchResults&&m.matchResults.length>0;
+var done=m.matchIsFinished;
+var sc='VS',cl='';
+if(done||live){
+var r=m.matchResults.find(function(x){return x.resultName==='Endergebnis';})||m.matchResults[0];
+var hs=r?r.pointsTeam1||0:0,as=r?r.pointsTeam2||0:0;
+sc=hs+'-'+as;cl=hs>as?'color:#4caf50':hs<as?'color:#ff5252':'color:#ffd740';
+}
+return '<div class="card"><div class="top">'+ds+' '+ts+(m.group&&m.group.groupName?' · '+m.group.groupName:'')+'</div><div class="row"><div class="side">'+(m.team1&&m.team1.teamIconUrl?'<img src="'+m.team1.teamIconUrl+'">':'')+' '+(m.team1?m.team1.teamName:'?')+'</div><div class="mid" style="'+cl+'">'+sc+'</div><div class="side r">'+(m.team2?m.team2.teamName:'?')+' '+(m.team2&&m.team2.teamIconUrl?'<img src="'+m.team2.teamIconUrl+'">':'')+'</div></div><div class="bot">'+(live?'<span class="live">LIVE</span>':done?'结束':'')+'</div></div>';
+}
+function renE(){
+var s=document.getElementById('s').value.toLowerCase();
+var m=d.m||[],t=d.t||[];
+if(s)m=m.filter(function(x){
+var c=x.competitions?x.competitions[0]:null;
+if(!c||!c.competitors||c.competitors.length<2)return false;
+return c.competitors[0].team.shortDisplayName.toLowerCase().indexOf(s)!==-1||c.competitors[1].team.shortDisplayName.toLowerCase().indexOf(s)!==-1;
+});
+var h='';
+if(t.length){
+h+='<details open><summary>📊 积分榜</summary>';
+for(var gi=0;gi<t.length;gi++){
+var g=t[gi];
+h+='<div style="color:#ffd740;margin:8px 0">'+g.name+'</div><table><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr>';
+var es=g.standings?g.standings.entries||[]:[];
+for(var i=0;i<es.length;i++){
+var e=es[i],st=e.stats||[];
+var gd=parseInt(st[8]?st[8].value:0)||0;
+h+='<tr><td>'+(i+1)+'</td><td><b>'+e.team.shortDisplayName+'</b></td><td>'+(st[0]?st[0].displayValue:'-')+'</td><td>'+(st[1]?st[1].displayValue:'-')+'</td><td>'+(st[2]?st[2].displayValue:'-')+'</td><td>'+(st[3]?st[3].displayValue:'-')+'</td><td>'+(st[4]?st[4].displayValue:'-')+'</td><td>'+(st[5]?st[5].displayValue:'-')+'</td><td style="color:'+(gd>0?'#4caf50':gd<0?'#ff5252':'#eee')+'">'+(gd>0?'+':'')+gd+'</td><td style="font-weight:bold;color:#4caf50">'+(st[6]?st[6].displayValue:'-')+'</td></tr>';
+}
+h+='</table>';
+}
+h+='</details>';
+}
+var live=m.filter(function(x){return x.status&&x.status.type&&x.status.type.state==='in';});
+var done=m.filter(function(x){return x.status&&x.status.type&&x.status.type.state==='post';});
+var up=m.filter(function(x){return x.status&&x.status.type&&x.status.type.state==='pre';});
+if(live.length)h+='<div style="color:#ff5252;margin:12px 0 6px">🔴 进行中</div><div class="grid">'+live.map(cardE).join('')+'</div>';
+if(up.length)h+='<div style="color:#4caf50;margin:12px 0 6px">⏰ 即将开始</div><div class="grid">'+up.slice(0,9).map(cardE).join('')+'</div>';
+if(done.length)h+='<div style="color:#888;margin:12px 0 6px">✅ 已结束</div><div class="grid">'+done.slice(-9).map(cardE).join('')+'</div>';
+document.getElementById('main').innerHTML=h||'<div class="ld">暂无数据</div>';
+}
+function cardE(m){
+var c=m.competitions?m.competitions[0]:null;
+if(!c||!c.competitors||c.competitors.length<2)return'';
+var hh=c.competitors[0],aa=c.competitors[1];
+var live=m.status&&m.status.type&&m.status.type.state==='in';
+var done=m.status&&m.status.type&&m.status.type.state==='post';
+var dt=new Date(m.date);
+var ds=dt.toLocaleDateString('zh-CN',{month:'short',day:'numeric'});
+var hs=hh.score?hh.score.displayValue||'0':'0';
+var as=aa.score?aa.score.displayValue||'0':'0';
+var sc=done||live?hs+'-'+as:'VS';
+return '<div class="card"><div class="top">'+ds+'</div><div class="row"><div class="side"><img src="'+(hh.team.logo||'')+'" width="20" onerror="this.style.display=\'none\'"> '+hh.team.shortDisplayName+'</div><div class="mid">'+sc+'</div><div class="side r">'+aa.team.shortDisplayName+' <img src="'+(aa.team.logo||'')+'" width="20" onerror="this.style.display=\'none\'"></div></div><div class="bot">'+(live?'<span class="live">LIVE</span>':done?'结束':'')+'</div></div>';
+}
+function fil(){if(lg==='UCL'||lg==='UEL')renE();else renG();}
+ld();
 </script>
 </body>
 </html>
