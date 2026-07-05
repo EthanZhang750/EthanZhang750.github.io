@@ -43,19 +43,17 @@ td{padding:7px 8px;border-bottom:1px solid rgba(0,230,118,0.05)}
 .modal-header{position:sticky;top:0;background:rgba(10,26,10,0.98);padding:12px 20px;display:flex;align-items:center;gap:12px;border-bottom:2px solid rgba(0,230,118,0.2)}
 .modal-back{background:rgba(0,230,118,0.15);border:1px solid rgba(0,230,118,0.3);color:#00e676;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:14px}
 .modal-title{font-size:1.1em;font-weight:bold;color:#00e676;flex:1}
-.modal-body{padding:20px;max-width:800px;margin:0 auto}
-.player-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
-.player-card{background:rgba(0,230,118,0.05);border-radius:10px;padding:10px;text-align:center;border:1px solid rgba(0,230,118,0.1)}
-.player-num{font-size:1.5em;font-weight:bold;color:#00e676}
-.player-name{font-weight:bold;font-size:0.8em;margin:3px 0}
-.player-pos{color:#aaa;font-size:0.7em}
+.modal-body{padding:20px;max-width:900px;margin:0 auto}
+.wiki-table{width:100%;font-size:0.85em}
+.wiki-table td,.wiki-table th{padding:6px 8px;border:1px solid rgba(0,230,118,0.15);text-align:center}
+.wiki-table th{background:rgba(0,230,118,0.2);font-weight:bold}
 @media(max-width:600px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="header">
     <h1>⚽ 足球数据中心</h1>
-    <p style="color:#aaa;margin-top:6px;font-size:0.85em;">德甲 · 欧冠 · 实时比分 · 积分榜 · Wikipedia阵容</p>
+    <p style="color:#aaa;margin-top:6px;font-size:0.85em;">德甲 · 欧冠 · 实时比分 · 积分榜 · 阵容</p>
 </div>
 
 <div class="nav">
@@ -114,14 +112,23 @@ var WIKI_PAGES={
 'SV Darmstadt 98':'SV_Darmstadt_98',
 'VfL Bochum':'VfL_Bochum',
 '1. FC Union Berlin':'1._FC_Union_Berlin',
+'FC St. Pauli':'FC_St._Pauli',
+'Holstein Kiel':'Holstein_Kiel',
+'Hamburger SV':'Hamburger_SV',
+'Schalke 04':'FC_Schalke_04',
+'Hertha BSC':'Hertha_BSC',
 'Real Madrid':'Real_Madrid_CF',
 'FC Barcelona':'FC_Barcelona',
 'Manchester City':'Manchester_City_F.C.',
 'Liverpool':'Liverpool_F.C.',
+'Arsenal':'Arsenal_F.C.',
+'Chelsea':'Chelsea_F.C.',
 'Paris Saint-Germain':'Paris_Saint-Germain_F.C.',
 'Juventus':'Juventus_FC',
 'Inter Milan':'Inter_Milan',
-'AC Milan':'AC_Milan'
+'AC Milan':'AC_Milan',
+'Napoli':'SSC_Napoli',
+'Borussia Mönchengladbach':'Borussia_Mönchengladbach'
 };
 
 function findWiki(name){
@@ -172,70 +179,73 @@ async function loadData(){
 
 async function loadRoster(teamName){
     var wikiPage=findWiki(teamName);
-    if(!wikiPage){
-        document.getElementById('modal').classList.add('active');
-        document.getElementById('modalTitle').textContent=teamName+' 阵容';
-        document.getElementById('modalContent').innerHTML='<div class="loading">❌ 未找到该球队的Wikipedia页面<br><small>请联系我们添加</small></div>';
-        return;
-    }
     
     document.getElementById('modal').classList.add('active');
     document.getElementById('modalTitle').textContent=teamName+' 阵容';
-    document.getElementById('modalContent').innerHTML='<div class="loading"><div class="spinner"></div>从Wikipedia加载阵容...</div>';
+    
+    if(!wikiPage){
+        // 尝试自动构建 Wikipedia 页面名
+        wikiPage=teamName.replace(/ /g,'_').replace(/\./g,'');
+        document.getElementById('modalContent').innerHTML='<div class="loading"><div class="spinner"></div>尝试从Wikipedia加载...</div>';
+    }else{
+        document.getElementById('modalContent').innerHTML='<div class="loading"><div class="spinner"></div>从Wikipedia加载阵容...</div>';
+    }
     
     try{
-        // 用 Wikipedia API 获取页面 HTML
-        var url='https://en.wikipedia.org/w/api.php?action=parse&page='+wikiPage+'&prop=text&section=0&format=json&origin=*';
+        // 获取 Current squad 章节
+        var url='https://en.wikipedia.org/w/api.php?action=parse&page='+wikiPage+'&prop=sections&format=json&origin=*';
         var r=await fetch(url);
         var d=await r.json();
-        var html=d.parse.text['*'];
+        var sections=d.parse.sections||[];
         
-        // 解析球员表
-        var players=[];
+        // 找 "Current squad" 或 "Players" 章节
+        var squadIndex=null;
+        for(var i=0;i<sections.length;i++){
+            var title=(sections[i].line||'').toLowerCase();
+            if(title.indexOf('current squad')!==-1||title.indexOf('players')!==-1||title.indexOf('first team')!==-1||title.indexOf('first-team')!==-1||title.indexOf('squad')!==-1){
+                squadIndex=sections[i].index;
+                break;
+            }
+        }
+        
+        if(squadIndex===null){
+            // 如果找不到，直接显示整个页面
+            squadIndex=0;
+        }
+        
+        // 获取该章节的 HTML
+        var url2='https://en.wikipedia.org/w/api.php?action=parse&page='+wikiPage+'&prop=text&section='+squadIndex+'&format=json&origin=*';
+        var r2=await fetch(url2);
+        var d2=await r2.json();
+        var html=d2.parse.text['*'];
+        
+        // 清理 HTML，保留表格
         var temp=document.createElement('div');
         temp.innerHTML=html;
-        var tables=temp.querySelectorAll('table.wikitable');
         
+        // 移除不需要的元素
+        var removes=temp.querySelectorAll('style,script,.navbox,.mw-editsection,.hatnote,link,meta');
+        for(var ri=0;ri<removes.length;ri++)removes[ri].remove();
+        
+        // 移除超链接的 href 但保留文字
+        var links=temp.querySelectorAll('a');
+        for(var li=0;li<links.length;li++){
+            links[li].removeAttribute('href');
+            links[li].style.color='#00e676';
+        }
+        
+        // 优化表格
+        var tables=temp.querySelectorAll('table');
         for(var ti=0;ti<tables.length;ti++){
-            var rows=tables[ti].querySelectorAll('tr');
-            for(var ri=1;ri<rows.length;ri++){
-                var cells=rows[ri].querySelectorAll('td,th');
-                if(cells.length>=3){
-                    var num=cells[0].textContent.trim();
-                    var name=cells[2]?cells[2].textContent.trim():cells[1].textContent.trim();
-                    var pos=cells[1]?cells[1].textContent.trim():'';
-                    
-                    // 清理名字
-                    name=name.replace(/\([^)]*\)/g,'').replace(/[0-9]+/g,'').trim();
-                    if(name.length>3&&name.length<40&&isNaN(num)===false){
-                        players.push({num:num,name:name,pos:pos});
-                    }
-                }
-            }
-            if(players.length>5)break;
+            tables[ti].classList.add('wiki-table');
+            tables[ti].style.width='100%';
         }
         
-        if(players.length===0){
-            document.getElementById('modalContent').innerHTML='<div class="loading">❌ 未能解析阵容数据<br><small>请访问 <a href="https://en.wikipedia.org/wiki/'+wikiPage+'" target="_blank" style="color:#00e676">Wikipedia页面</a> 查看</small></div>';
-            return;
-        }
-        
-        // 去重
-        var seen={},unique=[];
-        for(var i=0;i<players.length;i++){
-            if(!seen[players[i].name]){seen[players[i].name]=true;unique.push(players[i]);}
-        }
-        
-        var result='<div class="player-grid">';
-        for(var i=0;i<Math.min(unique.length,40);i++){
-            var p=unique[i];
-            result+='<div class="player-card"><div class="player-num">'+p.num+'</div><div class="player-name">'+p.name+'</div><div class="player-pos">'+p.pos+'</div></div>';
-        }
-        result+='</div>';
+        var result='<div style="font-size:0.85em;line-height:1.5">'+temp.innerHTML+'</div>';
         result+='<p style="text-align:center;margin-top:15px;font-size:0.8em;color:#888">数据来源：<a href="https://en.wikipedia.org/wiki/'+wikiPage+'" target="_blank" style="color:#00e676">Wikipedia</a></p>';
         document.getElementById('modalContent').innerHTML=result;
     }catch(e){
-        document.getElementById('modalContent').innerHTML='<div class="loading">❌ 加载失败: '+e.message+'</div>';
+        document.getElementById('modalContent').innerHTML='<div class="loading">❌ 加载失败: '+e.message+'<br><br><a href="https://en.wikipedia.org/wiki/'+wikiPage+'" target="_blank" style="color:#00e676">点击这里直接查看Wikipedia页面 →</a></div>';
     }
 }
 
@@ -250,7 +260,7 @@ function renderGerman(){
     
     var h='';
     if(t.length){
-        h+='<details open style="margin-bottom:15px"><summary style="color:#00e676;font-size:1em;cursor:pointer;padding:8px;">📊 积分榜（点击队名查看Wikipedia阵容）</summary><table><thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead><tbody>';
+        h+='<details open style="margin-bottom:15px"><summary style="color:#00e676;font-size:1em;cursor:pointer;padding:8px;">📊 积分榜（点击队名看阵容）</summary><table><thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead><tbody>';
         for(var i=0;i<t.length;i++){
             var r=t[i];
             h+='<tr><td>'+(i+1)+'</td><td class="team-link" onclick="loadRoster(\''+r.teamName.replace(/'/g,"\\'")+'\')"><b>'+(r.teamIconUrl?'<img src="'+r.teamIconUrl+'" width="18" style="vertical-align:middle;margin-right:4px">':'')+r.teamName+'</b></td><td>'+r.matches+'</td><td>'+r.won+'</td><td>'+r.draw+'</td><td>'+r.lost+'</td><td>'+r.goals+'</td><td>'+r.opponentGoals+'</td><td style="color:'+(r.goalDiff>0?'#00e676':r.goalDiff<0?'#ff5252':'#fff')+'">'+(r.goalDiff>0?'+':'')+r.goalDiff+'</td><td style="font-weight:bold;color:#00e676">'+r.points+'</td></tr>';
@@ -291,7 +301,7 @@ function renderESPN(){
     
     var h='';
     if(t.length){
-        h+='<details open style="margin-bottom:15px"><summary style="color:#00e676;font-size:1em;cursor:pointer;padding:8px;">📊 积分榜（点击队名查看Wikipedia阵容）</summary>';
+        h+='<details open style="margin-bottom:15px"><summary style="color:#00e676;font-size:1em;cursor:pointer;padding:8px;">📊 积分榜（点击队名看阵容）</summary>';
         for(var gi=0;gi<t.length;gi++){
             var g=t[gi];
             h+='<strong style="color:#ffd740">'+g.name+'</strong><table><thead><tr><th>#</th><th>球队</th><th>赛</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr></thead><tbody>';
